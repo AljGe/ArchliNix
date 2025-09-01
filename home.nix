@@ -13,6 +13,7 @@
     fzf
     devenv
     wget
+    gh
   ];
 
   home.file = {
