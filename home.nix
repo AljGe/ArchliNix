@@ -2,8 +2,7 @@
 { config, pkgs, ... }: {
   home.username = "archliNix";
   home.homeDirectory = "/home/archliNix";
-  home.stateVersion = "25.05"; # Dont Change
-
+  home.stateVersion = "25.05";
   home.packages = with pkgs; [
     bat
     tealdeer
