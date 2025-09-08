@@ -1,7 +1,7 @@
 
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }: { 
   home.username = "archliNix";
-  home.homeDirectory = "/home/archliNix";
+  home.homeDirectory = "/home/archliNix"; 
   home.stateVersion = "25.05";
   home.packages = with pkgs; [
     bat
@@ -17,6 +17,7 @@
     rsync
     pnpm
     nodejs_24
+    openssh
   ];
 
   home.file = {
@@ -88,9 +89,12 @@
 
     initContent = ''
       export HISTORY_BASE="$HOME/.local/state/zsh/history"
-      
+
       # Persistently configure LD_LIBRARY_PATH for WSL2 GPU passthrough
       export LD_LIBRARY_PATH="/usr/lib/wsl/lib''${LD_LIBRARY_PATH:+:}''$LD_LIBRARY_PATH"
+
+      # Initialize SSH agent forwarding from Windows to WSL
+      eval "$(/usr/sbin/wsl2-ssh-agent)"
     '';
   };
   programs.starship = {
