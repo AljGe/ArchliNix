@@ -94,7 +94,7 @@
       export LD_LIBRARY_PATH="/usr/lib/wsl/lib''${LD_LIBRARY_PATH:+:}''$LD_LIBRARY_PATH"
 
       # Initialize SSH agent forwarding from Windows to WSL
-      eval "$(/usr/sbin/wsl2-ssh-agent)"
+      eval "$(/usr/bin/wsl2-ssh-agent)"
     '';
   };
   programs.starship = {
