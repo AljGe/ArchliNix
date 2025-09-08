@@ -13,6 +13,10 @@
     devenv
     wget
     gh
+    fastfetch
+    rsync
+    pnpm
+    nodejs_24
   ];
 
   home.file = {
