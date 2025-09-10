@@ -1,7 +1,8 @@
+# ~/dotfiles/home.nix
 
-{ config, pkgs, ... }: { 
+{ config, pkgs, ... }: {
   home.username = "archliNix";
-  home.homeDirectory = "/home/archliNix"; 
+  home.homeDirectory = "/home/archliNix";
   home.stateVersion = "25.05";
   home.packages = with pkgs; [
     bat
@@ -16,7 +17,7 @@
     devenv
     wget
     rsync
-    
+
     pnpm
     nodejs_24
 
@@ -24,7 +25,8 @@
 
     glab
     gh
-    
+    nh
+
     ncdu
     uv
   ];
@@ -38,7 +40,6 @@
   };
 
   programs.home-manager.enable = true;
-
 
   fonts.fontconfig.enable = true;
 
@@ -69,10 +70,12 @@
       ".." = "cd ..";
       "..." = "cd ../..";
       ff = "fzf";
-      cat = "bat";
-      grep = "rg";
+      #cat = "bat";
+      #grep = "rg";
       # make 'grep -R' work with ripgrep...
       update-hm = "home-manager switch --flake ~/dotfiles/.#archliNix";
+      update-nh = "nh home switch ~/dotfiles/";
+      clean-nh = "nh clean user --keep-since 4d --keep 3";
     };
     history = {
       size = 20000;
