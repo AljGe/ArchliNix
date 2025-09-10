@@ -6,27 +6,21 @@
   home.stateVersion = "25.05";
   home.packages = with pkgs; [
     bat
-
     tealdeer
     btop
     fastfetch
-
     ripgrep
     eza
     fzf
     devenv
     wget
     rsync
-
     pnpm
     nodejs_24
-
     openssh
-
     glab
     gh
     nh
-
     ncdu
     uv
   ];
