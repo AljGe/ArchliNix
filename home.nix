@@ -25,28 +25,38 @@ in {
     pnpm
     uv
 
-    # cli and utilities
-    bat
-    btop-cuda
-    duf
+    # Filesystem & search
     dust
     eza
     fd
-    fastfetch
     fzf
+    ncdu
+    duf
+    ripgrep
+    zoxide
+
+    # File content & data manipulation
+    bat
+    jq
+    sd
+    yq-go
+
+    # System monitoring & info
+    btop-cuda
+    fastfetch
+    procs
+
+    # Development & version control
     gh
     glab
-    jq
-    ncdu
+
+    # Network
     openssh
-    procs
-    ripgrep
     rsync
-    sd
-    tealdeer
     wget
-    yq-go
-    zoxide
+
+    # Documentation
+    tealdeer
 
     # gui apps
     librewolf
