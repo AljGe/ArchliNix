@@ -73,12 +73,15 @@
       ".." = "cd ..";
       "..." = "cd ../..";
       ff = "fzf";
+      cl = "clear";
       #cat = "bat";
       #grep = "rg";
       # make 'grep -R' work with ripgrep...
-      update-hm = "home-manager switch --flake ~/dotfiles/.#archliNix";
-      update-nh = "nh home switch ~/dotfiles/";
+      switch-hm = "home-manager switch --flake ~/dotfiles/.#archliNix";
+      switch-nh = "nh home switch ~/dotfiles/";
+      switch-nhd = "nh home switch ~/dotfiles/ --dry";
       clean-nh = "nh clean user --keep-since 4d --keep 3";
+      clean-nhd = "nh clean user --dry --keep-since 4d --keep 3";
     };
     history = {
       size = 20000;
