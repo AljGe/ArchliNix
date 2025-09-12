@@ -50,6 +50,23 @@ in {
         };
       };
     };
+
+    # Colemak-DH friendly bindings for fzf (only modifier keys to preserve typing)
+    programs.fzf = {
+      defaultOptions = [
+        "--bind=alt-n:backward-char,alt-e:down,alt-i:up,alt-o:forward-char,alt-a:beginning-of-line,alt-h:end-of-line"
+      ];
+    };
+
+    # Colemak-DH movements for zsh vi-mode (applies when vi-mode is enabled)
+    programs.zsh.initExtra = ''
+      bindkey -M vicmd 'n' backward-char
+      bindkey -M vicmd 'e' down-line-or-history
+      bindkey -M vicmd 'i' up-line-or-history
+      bindkey -M vicmd 'o' forward-char
+      bindkey -M vicmd 'a' beginning-of-line
+      bindkey -M vicmd 'h' end-of-line
+    '';
   };
 }
 
