@@ -92,16 +92,14 @@ in
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     shellAliases = {
-      ls = "eza --icons";
-      ll = "eza -l --icons";
-      la = "eza -la --icons";
-      ".." = "cd ..";
-      "..." = "cd ../..";
       ff = "fzf";
       cl = "clear";
       #cat = "bat";
       #grep = "rg";
       # make 'grep -R' work with ripgrep...
+      ll = "eza -lh --git --group-directories-first --icons";
+      la = "eza -lha --git --group-directories-first --icons";
+      lt = "eza -lha --git --group-directories-first --tree --icons";
       switch-hm = "home-manager switch --flake ~/dotfiles/.#archliNix";
       switch-nh = "nh home switch ~/dotfiles/";
       switch-nhd = "nh home switch ~/dotfiles/ --dry";
@@ -119,6 +117,14 @@ in
         "git"
         "sudo"
         "per-directory-history"
+        "history-substring-search"
+        "extract"
+        "command-not-found"
+        "colored-man-pages"
+        "archlinux"
+        "direnv"
+        "docker-compose"
+        "aliases"
       ];
       theme = "robbyrussell";
     };
@@ -128,9 +134,20 @@ in
       if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
         . "$HOME/.nix-profile/etc/profile.d/nix.sh"
       fi
+      # Ensure UTF-8 locale for login shells (overrides system defaults)
+      export LANG="C.UTF-8"
+      export LC_CTYPE="C.UTF-8"
     '';
 
     initContent = ''
+      export LESS='-RFX --mouse'
+      export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
+      export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+      export FZF_ALT_C_COMMAND="fd --type d --hidden --follow --exclude .git"
+      # optional, beautiful man pages via bat (comment out if you prefer OMZ coloring)
+      # export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+      bindkey "^R" fzf-history-widget
+
       export HISTORY_BASE="$HOME/.local/state/zsh/history"
 
       # Persistently configure LD_LIBRARY_PATH for WSL2 GPU passthrough
@@ -139,9 +156,34 @@ in
       # Initialize SSH agent forwarding from Windows to WSL
       eval "$(/usr/bin/wsl2-ssh-agent)"
     '';
+
+    # Ensure session variables (LANG/LC_*) are available in all zsh invocations
+    envExtra = ''
+      # Silence Perl locale warnings
+      export PERL_BADLANG=0
+      if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
+        . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+      fi
+    '';
   };
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
   };
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
+    defaultCommand = "fd --type f --hidden --follow --exclude .git";
+    fileWidgetCommand = "fd --type f --hidden --follow --exclude .git";
+    changeDirWidgetCommand = "fd --type d --hidden --follow --exclude .git";
+  };
+  programs.zoxide = {
+  enable = true;
+    enableZshIntegration = true;
+  };
+  # programs.atuin = {
+  #   enable = true;
+  #   enableZshIntegration = true;
+  # 	settings = { auto_sync = false; }; # set true if you want sync
+  # };
 }
