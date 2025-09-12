@@ -33,6 +33,9 @@ in
     nh
     ncdu
     uv
+    # gui apps~
+    tor-browser
+    librewolf
   ];
 
   home.file = {
