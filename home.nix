@@ -1,6 +1,9 @@
 # ~/dotfiles/home.nix
-
-{ config, pkgs, ... }: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   home.username = "archliNix";
   home.homeDirectory = "/home/archliNix";
   home.stateVersion = "25.05";
@@ -37,8 +40,8 @@
     secrets."example_secret" = {
       path = "/home/archliNix/.secrets/example_secret";
     };
-    secrets."github_private_mail" = { };
-    secrets."github_private_name" = { };
+    secrets."github_private_mail" = {};
+    secrets."github_private_name" = {};
     templates."example.env" = {
       content = ''
         EXAMPLE_SECRET=${config.sops.placeholder."example_secret"}
@@ -57,8 +60,8 @@
 
   home.sessionVariables = {
     # EDITOR = "emacs";
-  };  
- 
+  };
+
   programs.home-manager.enable = true;
 
   fonts.fontconfig.enable = true;
@@ -71,7 +74,7 @@
       br = "branch";
     };
     includes = [
-      { path = "/home/archliNix/.config/git/user.conf"; }
+      {path = "/home/archliNix/.config/git/user.conf";}
     ];
   };
 
@@ -108,19 +111,19 @@
     };
     oh-my-zsh = {
       enable = true;
-      plugins = [ 
-        "git" 
+      plugins = [
+        "git"
         "sudo"
-        "per-directory-history" 
+        "per-directory-history"
       ];
       theme = "robbyrussell";
     };
 
     profileExtra = ''
-     # Load the Nix environment
-     if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
-       . "$HOME/.nix-profile/etc/profile.d/nix.sh"
-     fi
+      # Load the Nix environment
+      if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+        . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+      fi
     '';
 
     initContent = ''

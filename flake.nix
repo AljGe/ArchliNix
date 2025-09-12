@@ -1,4 +1,5 @@
-{ description = "My Declarative Home Environment on Arch Linux";
+{
+  description = "My Declarative Home Environment on Arch Linux";
 
   # Define all external dependencies here.
   inputs = {
@@ -19,7 +20,13 @@
   };
 
   # Define what this flake builds.
-  outputs = { self, nixpkgs, home-manager, sops-nix,... }: {
+  outputs = {
+    self,
+    nixpkgs,
+    home-manager,
+    sops-nix,
+    ...
+  }: {
     # Define a Home Manager configuration for a specific user and host.
     # Using a unique name like "username@hostname" allows for managing
     # multiple configurations from the same flake.
@@ -28,24 +35,24 @@
       # The architecture must match the host system.
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
       # Specify the main module file for this configuration.
-      modules = [ sops-nix.homeManagerModule ./home.nix ];
+      modules = [sops-nix.homeManagerModule ./home.nix];
     };
   };
-  
+
   nixConfig = {
-  extra-substituters = [
-    "https://cache.nixos.org/"
-    "https://nix-community.cachix.org"
-    "https://cache.garnix.io"
-    "https://devenv.cachix.org"
-    "https://numtide.cachix.org"
-  ];
-  extra-trusted-public-keys = [
-    "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-    "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-    "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
-    "devenv.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo="
-    "numtide.cachix.org-1:2ps4FhNIRZrg4n/7P+90E0SZL2B3enJnxa6Q/Q/Pgqc="
-  ];
-};
+    extra-substituters = [
+      "https://cache.nixos.org/"
+      "https://nix-community.cachix.org"
+      "https://cache.garnix.io"
+      "https://devenv.cachix.org"
+      "https://numtide.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
+      "devenv.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo="
+      "numtide.cachix.org-1:2ps4FhNIRZrg4n/7P+90E0SZL2B3enJnxa6Q/Q/Pgqc="
+    ];
+  };
 }
