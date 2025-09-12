@@ -12,21 +12,20 @@ in
   home.homeDirectory = "/home/archliNix";
   home.stateVersion = "25.05";
   home.packages = with pkgs; [
-    alejandra
-    age
-    sops
-    bat
-    tealdeer
-    btop
-    fastfetch
-    ripgrep
-    eza
-    fzf
-    devenv
-    wget
-    rsync
-    pnpm
-    nodejs_24
+    # nix tools
+    nh alejandra
+    # secrets
+    age sops
+
+    # utils
+    bat tealdeer
+    fd jq yq-go procs duf dust sd zellij gcalcli
+    btop fastfetch
+
+    # package managers	
+    pnpm nodejs_24 
+    uv
+
     openssh
     glab
     gh
