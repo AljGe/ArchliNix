@@ -71,6 +71,7 @@ in
 
   programs.git = {
     enable = true;
+    delta.enable = true;
     aliases = {
       st = "status";
       co = "checkout";
