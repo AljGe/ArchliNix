@@ -30,13 +30,29 @@
   home.file = {
   };
 
-
   sops = {
     age.keyFile = "/home/archliNix/.config/sops/age/keys.txt";
     defaultSopsFile = ./secrets/secrets.yaml;
-    secrets."example_secret" = { };
+    secrets."example_secret" = {
+      path = "/home/archliNix/.secrets/example_secret";
+    };
+    secrets."github_private_mail" = { };
+    secrets."github_private_name" = { };
+    templates."example.env" = {
+      content = ''
+        EXAMPLE_SECRET=${config.sops.placeholder."example_secret"}
+      '';
+      path = "/home/archliNix/.config/example/.env";
+    };
+    templates."git-user.conf" = {
+      content = ''
+        [user]
+          name = ${config.sops.placeholder."github_private_name"}
+          email = ${config.sops.placeholder."github_private_mail"}
+      '';
+      path = "/home/archliNix/.config/git/user.conf";
+    };
   };
-
 
   home.sessionVariables = {
     # EDITOR = "emacs";
@@ -55,6 +71,9 @@
       co = "checkout";
       br = "branch";
     };
+    includes = [
+      { path = "/home/archliNix/.config/git/user.conf"; }
+    ];
   };
 
   programs.direnv = {
