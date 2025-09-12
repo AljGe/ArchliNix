@@ -14,6 +14,7 @@ in {
     alejandra
     devenv
     nh
+    nix-search-tv
 
     # secrets
     age
@@ -26,7 +27,7 @@ in {
 
     # cli and utilities
     bat
-    btop
+    btop-cuda
     duf
     dust
     eza
@@ -121,6 +122,7 @@ in {
       switch-nhd = "nh home switch ~/dotfiles/ --dry";
       clean-nh = "nh clean user --keep-since 4d --keep 3";
       clean-nhd = "nh clean user --dry --keep-since 4d --keep 3";
+      ns="nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --scheme history";
     };
 
     history = {
