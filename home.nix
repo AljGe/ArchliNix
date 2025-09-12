@@ -7,6 +7,9 @@
   git-user-conf = "${config.home.homeDirectory}/.config/git/user.conf";
   jj-user-conf = "${config.home.homeDirectory}/.config/jj/config.toml";
 in {
+  imports = [
+    ./modules/colemak-dh.nix
+  ];
   home.username = "archliNix";
   home.homeDirectory = "/home/archliNix";
   home.stateVersion = "25.05";
@@ -67,8 +70,7 @@ in {
     tor-browser
   ];
 
-  home.file = {
-  };
+  home.file = {};
 
   sops = {
     age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
@@ -113,6 +115,8 @@ in {
   programs.home-manager.enable = true;
 
   fonts.fontconfig.enable = true;
+
+  my.colemakDH.enable = true;
 
   programs.git = {
     enable = true;
