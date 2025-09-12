@@ -11,27 +11,47 @@ in {
   home.stateVersion = "25.05";
   home.packages = with pkgs; [
     # nix tools
-    nh alejandra
+    alejandra
+    devenv
+    nh
+
     # secrets
-    age sops
+    age
+    sops
 
-    # utils
-    bat tealdeer
-    fd jq yq-go procs duf dust sd zellij gcalcli
-    btop fastfetch
-
-    # package managers	
-    pnpm nodejs_24 
+    # package managers and runtimes
+    nodejs_24
+    pnpm
     uv
 
+    # cli and utilities
+    bat
+    btop
+    duf
+    dust
+    eza
+    fd
+    fastfetch
+    fzf
+    gcalcli
+    gh
+    glab
+    jq
+    ncdu
     openssh
-    glab gh
-    ncdu 
-    ripgrep eza fzf zoxide
-    devenv
-    wget rsync
+    procs
+    ripgrep
+    rsync
+    sd
+    tealdeer
+    wget
+    yq-go
+    zellij
+    zoxide
+
     # gui apps
-    tor-browser librewolf
+    librewolf
+    tor-browser
   ];
 
   home.file = {
@@ -177,7 +197,7 @@ in {
     changeDirWidgetCommand = "fd --type d --hidden --follow --exclude .git";
   };
   programs.zoxide = {
-  enable = true;
+    enable = true;
     enableZshIntegration = true;
   };
   # programs.atuin = {
