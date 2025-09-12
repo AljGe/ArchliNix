@@ -33,7 +33,6 @@ in {
     fd
     fastfetch
     fzf
-    gcalcli
     gh
     glab
     jq
@@ -46,7 +45,6 @@ in {
     tealdeer
     wget
     yq-go
-    zellij
     zoxide
 
     # gui apps
