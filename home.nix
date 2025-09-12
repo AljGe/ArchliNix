@@ -27,14 +27,13 @@ in
     uv
 
     openssh
-    glab
-    gh
-    nh
-    ncdu
-    uv
-    # gui apps~
-    tor-browser
-    librewolf
+    glab gh
+    ncdu 
+    ripgrep eza fzf zoxide
+    devenv
+    wget rsync
+    # gui apps
+    tor-browser librewolf
   ];
 
   home.file = {
