@@ -93,12 +93,18 @@ in {
         [user]
           name = "${config.sops.placeholder."github_private_name"}"
           email = "${config.sops.placeholder."github_private_mail"}"
+
+        [ui]
+          default-command = "log"
+          editor = "nano"
       '';
       path = jj-user-conf;
     };
   };
 
   home.sessionVariables = {
+    EDITOR = "nano";
+    VISUAL = "nano";
     # EDITOR = "emacs";
   };
 
@@ -116,7 +122,6 @@ in {
     };
     includes = [
       {path = git-user-conf;}
-      {path = jj-user-conf;}
     ];
   };
 
