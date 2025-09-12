@@ -5,6 +5,7 @@
   ...
 }: let
   git-user-conf = "${config.home.homeDirectory}/.config/git/user.conf";
+  jj-user-conf = "${config.home.homeDirectory}/.config/jj/config.toml";
 in {
   home.username = "archliNix";
   home.homeDirectory = "/home/archliNix";
@@ -87,6 +88,14 @@ in {
       '';
       path = git-user-conf;
     };
+    templates."jj-user.conf" = {
+      content = ''
+        [user]
+          name = "${config.sops.placeholder."github_private_name"}"
+          email = "${config.sops.placeholder."github_private_mail"}"
+      '';
+      path = jj-user-conf;
+    };
   };
 
   home.sessionVariables = {
@@ -107,6 +116,7 @@ in {
     };
     includes = [
       {path = git-user-conf;}
+      {path = jj-user-conf;}
     ];
   };
 
