@@ -3,7 +3,11 @@
   config,
   pkgs,
   ...
-}: {
+}:
+let
+  git-user-conf = "${config.home.homeDirectory}/.config/git/user.conf";
+in
+{
   home.username = "archliNix";
   home.homeDirectory = "/home/archliNix";
   home.stateVersion = "25.05";
@@ -35,18 +39,16 @@
   };
 
   sops = {
-    age.keyFile = "/home/archliNix/.config/sops/age/keys.txt";
+    age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
     defaultSopsFile = ./secrets/secrets.yaml;
-    secrets."example_secret" = {
-      path = "/home/archliNix/.secrets/example_secret";
-    };
+    secrets."example_secret" = {};
     secrets."github_private_mail" = {};
     secrets."github_private_name" = {};
     templates."example.env" = {
       content = ''
         EXAMPLE_SECRET=${config.sops.placeholder."example_secret"}
       '';
-      path = "/home/archliNix/.config/example/.env";
+      path = "${config.home.homeDirectory}/.config/example/.env";
     };
     templates."git-user.conf" = {
       content = ''
@@ -54,7 +56,7 @@
           name = ${config.sops.placeholder."github_private_name"}
           email = ${config.sops.placeholder."github_private_mail"}
       '';
-      path = "/home/archliNix/.config/git/user.conf";
+      path = git-user-conf;
     };
   };
 
@@ -74,7 +76,7 @@
       br = "branch";
     };
     includes = [
-      {path = "/home/archliNix/.config/git/user.conf";}
+      {path = git-user-conf;}
     ];
   };
 
