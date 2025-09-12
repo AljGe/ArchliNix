@@ -28,8 +28,8 @@ in {
             A = "extend_to_line_start";
             h = "goto_line_end";
             H = "extend_to_line_end";
-            "E-o" = "page_down";
-            "E-n" = "page_up";
+            "A-o" = "page_down";
+            "A-n" = "page_up";
             j = "insert_mode";
             k = "select_mode";
             u = "undo";
@@ -44,8 +44,8 @@ in {
             y = "extend_next_word_end";
             a = "extend_to_line_start";
             h = "extend_to_line_end";
-            "E-o" = "page_down";
-            "E-n" = "page_up";
+            "A-o" = "page_down";
+            "A-n" = "page_up";
           };
         };
       };
