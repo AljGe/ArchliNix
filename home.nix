@@ -47,6 +47,7 @@ in {
     procs
 
     # Development & version control
+    jujutsu
     gh
     glab
 
