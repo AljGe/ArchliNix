@@ -5,6 +5,7 @@
   home.homeDirectory = "/home/archliNix";
   home.stateVersion = "25.05";
   home.packages = with pkgs; [
+    alejandra
     age
     sops
     bat
@@ -64,8 +65,6 @@
 
   programs.git = {
     enable = true;
-    userName = "example name";
-    userEmail = "your.email@example.com";
     aliases = {
       st = "status";
       co = "checkout";
