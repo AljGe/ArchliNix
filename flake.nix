@@ -12,10 +12,14 @@
       # that is defined above, preventing version conflicts.
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # Define what this flake builds.
-  outputs = { self, nixpkgs, home-manager,... }: {
+  outputs = { self, nixpkgs, home-manager, sops-nix,... }: {
     # Define a Home Manager configuration for a specific user and host.
     # Using a unique name like "username@hostname" allows for managing
     # multiple configurations from the same flake.
@@ -23,9 +27,8 @@
       # Pass the nixpkgs collection to Home Manager.
       # The architecture must match the host system.
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
-
       # Specify the main module file for this configuration.
-      modules = [./home.nix ];
+      modules = [ sops-nix.homeManagerModule ./home.nix ];
     };
   };
   

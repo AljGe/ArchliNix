@@ -5,6 +5,8 @@
   home.homeDirectory = "/home/archliNix";
   home.stateVersion = "25.05";
   home.packages = with pkgs; [
+    age
+    sops
     bat
     tealdeer
     btop
@@ -29,10 +31,17 @@
   };
 
 
-  home.sessionVariables = {
-    # EDITOR = "emacs";
+  sops = {
+    age.keyFile = "/home/archliNix/.config/sops/age/keys.txt";
+    defaultSopsFile = ./secrets/secrets.yaml;
+    secrets."example_secret" = { };
   };
 
+
+  home.sessionVariables = {
+    # EDITOR = "emacs";
+  };  
+ 
   programs.home-manager.enable = true;
 
   fonts.fontconfig.enable = true;
