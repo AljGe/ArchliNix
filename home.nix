@@ -3,11 +3,9 @@
   config,
   pkgs,
   ...
-}:
-let
+}: let
   git-user-conf = "${config.home.homeDirectory}/.config/git/user.conf";
-in
-{
+in {
   home.username = "archliNix";
   home.homeDirectory = "/home/archliNix";
   home.stateVersion = "25.05";
@@ -106,6 +104,7 @@ in
       clean-nh = "nh clean user --keep-since 4d --keep 3";
       clean-nhd = "nh clean user --dry --keep-since 4d --keep 3";
     };
+
     history = {
       size = 20000;
       save = 20000;
