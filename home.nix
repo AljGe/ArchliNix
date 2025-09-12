@@ -37,6 +37,7 @@ in {
     zoxide
 
     # File content & data manipulation
+    helix
     bat
     jq
     sd
