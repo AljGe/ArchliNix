@@ -44,8 +44,12 @@
       modules = [
         sops-nix.homeManagerModule
         # Enable NUR overlay so pkgs.nur.repos.rycee.firefox-addons is available
-        ({ config, pkgs, ... }: {
-          nixpkgs.overlays = [ nur.overlays.default ];
+        ({
+          config,
+          pkgs,
+          ...
+        }: {
+          nixpkgs.overlays = [nur.overlays.default];
         })
         ./home.nix
       ];

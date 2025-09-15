@@ -1,6 +1,10 @@
-{ config, lib, pkgs, ... }:
-with lib;
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
   cfg = config.my.colemakDH;
 in {
   options.my.colemakDH.enable = mkEnableOption "Colemak-DH remaps for CLI tools";
@@ -69,5 +73,3 @@ in {
     '';
   };
 }
-
-
