@@ -23,6 +23,7 @@ in {
     # secrets
     age
     sops
+    magic-wormhole-rs
 
     # package managers and runtimes
     nodejs_24
