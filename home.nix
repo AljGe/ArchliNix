@@ -34,11 +34,9 @@ in {
     dust
     eza
     fd
-    fzf
     ncdu
     duf
     ripgrep
-    zoxide
 
     # File content & data manipulation
     micro
@@ -71,7 +69,6 @@ in {
     tor-browser
   ];
 
-  home.file = {};
 
   sops = {
     age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
@@ -110,6 +107,9 @@ in {
   home.sessionVariables = {
     EDITOR = "nano";
     VISUAL = "nano";
+    LANG = "C.UTF-8";
+    LC_CTYPE = "C.UTF-8";
+    PERL_BADLANG = "0";
     # EDITOR = "emacs";
   };
 
@@ -177,31 +177,14 @@ in {
         "extract"
         "colored-man-pages"
         "archlinux"
-        "direnv"
         "docker-compose"
         "aliases"
       ];
-      theme = "robbyrussell";
+      theme = "";
     };
-
-    profileExtra = ''
-      # Load the Nix environment
-      if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
-        . "$HOME/.nix-profile/etc/profile.d/nix.sh"
-      fi
-      # Ensure UTF-8 locale for login shells (overrides system defaults)
-      export LANG="C.UTF-8"
-      export LC_CTYPE="C.UTF-8"
-    '';
 
     initContent = ''
       export LESS='-RFX --mouse'
-      export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
-      export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-      export FZF_ALT_C_COMMAND="fd --type d --hidden --follow --exclude .git"
-      # optional, beautiful man pages via bat (comment out if you prefer OMZ coloring)
-      # export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-      bindkey "^R" fzf-history-widget
 
       export HISTORY_BASE="$HOME/.local/state/zsh/history"
 
@@ -213,13 +196,10 @@ in {
 
       # Enable 'did you mean' command correction
       export ENABLE_CORRECTION="true"
-      setopt CORRECT
     '';
 
 
     envExtra = ''
-      # Silence Perl locale warnings
-      export PERL_BADLANG=0
       if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
         . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
       fi
