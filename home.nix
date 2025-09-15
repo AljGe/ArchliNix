@@ -109,6 +109,7 @@ in {
     LANG = "C.UTF-8";
     LC_CTYPE = "C.UTF-8";
     PERL_BADLANG = "0";
+    UV_PYTHON_DOWNLOADS = "manual";
     # EDITOR = "emacs";
   };
 
