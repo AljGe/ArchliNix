@@ -225,11 +225,17 @@ in {
       fi
     '';
   };
+  # programs.command-not-found disabled in favor of nix-index integration
+  # Use nix-index for command-not-found suggestions with prebuilt databasef
+  programs.nix-index = {
+    enable = true;
+    enableZshIntegration = true;
+    enableBashIntegration = false;	
+  };
   programs.carapace = {
     enable = true;
     enableZshIntegration = true;
   };
-
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
