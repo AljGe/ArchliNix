@@ -61,7 +61,7 @@ in {
     openssh
     rsync
     wget
-    pings
+    uutils-coreutils-noprefix
 
     # Documentation
     tealdeer
@@ -210,7 +210,7 @@ in {
     '';
 
 
-d    envExtra = ''
+    envExtra = ''
       # Silence Perl locale warnings
       export PERL_BADLANG=0
       if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
