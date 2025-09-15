@@ -173,7 +173,6 @@ in {
         "per-directory-history"
         "history-substring-search"
         "extract"
-        "command-not-found"
         "colored-man-pages"
         "archlinux"
         "direnv"
@@ -237,6 +236,10 @@ in {
     changeDirWidgetCommand = "fd --type d --hidden --follow --exclude .git";
   };
   programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+  programs.nix-index = {
     enable = true;
     enableZshIntegration = true;
   };
