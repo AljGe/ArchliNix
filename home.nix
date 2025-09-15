@@ -9,6 +9,7 @@
 in {
   imports = [
     ./modules/colemak-dh.nix
+    ./modules/librewolf.nix
   ];
   home.username = "archliNix";
   home.homeDirectory = "/home/archliNix";
@@ -66,7 +67,6 @@ in {
     tealdeer
 
     # gui apps
-    librewolf
     tor-browser
   ];
 
@@ -209,8 +209,8 @@ in {
       eval "$(/usr/bin/wsl2-ssh-agent)"
     '';
 
-    # Ensure session variables (LANG/LC_*) are available in all zsh invocations
-    envExtra = ''
+
+d    envExtra = ''
       # Silence Perl locale warnings
       export PERL_BADLANG=0
       if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then

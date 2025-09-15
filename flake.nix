@@ -17,6 +17,11 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # NUR for firefox add-ons (rycee) and other community packages
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # Define what this flake builds.
@@ -25,6 +30,7 @@
     nixpkgs,
     home-manager,
     sops-nix,
+    nur,
     ...
   }: {
     # Define a Home Manager configuration for a specific user and host.
@@ -35,7 +41,14 @@
       # The architecture must match the host system.
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
       # Specify the main module file for this configuration.
-      modules = [sops-nix.homeManagerModule ./home.nix];
+      modules = [
+        sops-nix.homeManagerModule
+        # Enable NUR overlay so pkgs.nur.repos.rycee.firefox-addons is available
+        ({ config, pkgs, ... }: {
+          nixpkgs.overlays = [ nur.overlays.default ];
+        })
+        ./home.nix
+      ];
     };
   };
 
