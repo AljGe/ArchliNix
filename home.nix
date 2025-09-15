@@ -69,7 +69,6 @@ in {
     tor-browser
   ];
 
-
   sops = {
     age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
     defaultSopsFile = ./secrets/secrets.yaml;
@@ -112,6 +111,12 @@ in {
     PERL_BADLANG = "0";
     # EDITOR = "emacs";
   };
+
+  # Ensure Nix profile binaries are on PATH for all shells (direnv, subshells, etc.)
+  home.sessionPath = [
+    "${config.home.homeDirectory}/.nix-profile/bin"
+    "/nix/var/nix/profiles/default/bin"
+  ];
 
   programs.home-manager.enable = true;
 
@@ -185,19 +190,14 @@ in {
 
     initContent = ''
       export LESS='-RFX --mouse'
-
       export HISTORY_BASE="$HOME/.local/state/zsh/history"
-
       # Persistently configure LD_LIBRARY_PATH for WSL2 GPU passthrough
       export LD_LIBRARY_PATH="/usr/lib/wsl/lib''${LD_LIBRARY_PATH:+:}''$LD_LIBRARY_PATH"
-
       # Initialize SSH agent forwarding from Windows to WSL
       eval "$(/usr/bin/wsl2-ssh-agent)"
-
       # Enable 'did you mean' command correction
       export ENABLE_CORRECTION="true"
     '';
-
 
     envExtra = ''
       if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
@@ -210,7 +210,7 @@ in {
   programs.nix-index = {
     enable = true;
     enableZshIntegration = true;
-    enableBashIntegration = false;	
+    enableBashIntegration = false;
   };
   programs.carapace = {
     enable = true;
