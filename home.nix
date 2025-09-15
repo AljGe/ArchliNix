@@ -156,8 +156,8 @@ in {
       switch-nhd = "nh home switch ~/dotfiles/ --dry";
       clean-nh = "nh clean user --keep-since 4d --keep 3";
       clean-nhd = "nh clean user --dry --keep-since 4d --keep 3";
-      ns="nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --scheme history";
-      nhs="nh search";
+      ns = "nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --scheme history";
+      nhs = "nh search";
       wormhole = "wormhole-rs";
       magic-wormhole = "wormhole-rs";
     };
