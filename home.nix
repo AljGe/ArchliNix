@@ -157,7 +157,9 @@ in {
       clean-nh = "nh clean user --keep-since 4d --keep 3";
       clean-nhd = "nh clean user --dry --keep-since 4d --keep 3";
       ns="nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --scheme history";
+      nhs="nh search";
       wormhole = "wormhole-rs";
+      magic-wormhole = "wormhole-rs";
     };
 
     history = {
@@ -208,6 +210,10 @@ in {
 
       # Initialize SSH agent forwarding from Windows to WSL
       eval "$(/usr/bin/wsl2-ssh-agent)"
+
+      # Enable 'did you mean' command correction
+      export ENABLE_CORRECTION="true"
+      setopt CORRECT
     '';
 
 
@@ -236,10 +242,6 @@ in {
     changeDirWidgetCommand = "fd --type d --hidden --follow --exclude .git";
   };
   programs.zoxide = {
-    enable = true;
-    enableZshIntegration = true;
-  };
-  programs.nix-index = {
     enable = true;
     enableZshIntegration = true;
   };
