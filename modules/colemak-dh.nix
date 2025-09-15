@@ -59,7 +59,7 @@ in {
     };
 
     # Colemak-DH movements for zsh vi-mode (applies when vi-mode is enabled)
-    programs.zsh.initExtra = ''
+    programs.zsh.initContent = ''
       bindkey -M vicmd 'n' backward-char
       bindkey -M vicmd 'e' down-line-or-history
       bindkey -M vicmd 'i' up-line-or-history
