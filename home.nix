@@ -1,4 +1,3 @@
-# ~/dotfiles/home.nix
 {
   config,
   pkgs,
@@ -62,6 +61,7 @@ in {
     openssh
     rsync
     wget
+    pings
 
     # Documentation
     tealdeer
