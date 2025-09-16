@@ -142,7 +142,10 @@ in {
     enable = true;
     nix-direnv.enable = true;
   };
-
+  programs.gemini-cli = {
+    enable = true;
+    defaultModel = "gemini-2.5-pro";
+  };
   programs.zsh = {
     enable = true;
     enableCompletion = true;
