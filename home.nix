@@ -5,6 +5,14 @@
 }: let
   git-user-conf = "${config.home.homeDirectory}/.config/git/user.conf";
   jj-user-conf = "${config.home.homeDirectory}/.config/jj/config.toml";
+  devenv-with-uv = pkgs.writeShellApplication {
+    name = "devenv";
+    runtimeInputs = [pkgs.devenv];
+    text = ''
+      export UV_PYTHON_DOWNLOADS=manual
+      exec ${pkgs.devenv}/bin/devenv "$@"
+    '';
+  };
 in {
   imports = [
     ./modules/colemak-dh.nix
@@ -13,10 +21,9 @@ in {
   home.username = "archliNix";
   home.homeDirectory = "/home/archliNix";
   home.stateVersion = "25.05";
-  home.packages = with pkgs; [
+  home.packages = (with pkgs; [
     # nix tools
     alejandra
-    devenv
     nh
     nix-search-tv
 
@@ -61,13 +68,24 @@ in {
     rsync
     wget
     uutils-coreutils-noprefix
+    dnsutils
 
     # Documentation
     tealdeer
 
     # gui apps
     tor-browser
-  ];
+    
+    # other
+    typst
+    marp-cli
+
+    # fonts
+    atkinson-hyperlegible
+    dejavu_fonts
+    noto-fonts-color-emoji
+  ])
+  ++ [devenv-with-uv];
 
   sops = {
     age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
@@ -111,6 +129,7 @@ in {
     PERL_BADLANG = "0";
     UV_PYTHON_DOWNLOADS = "manual";
     # EDITOR = "emacs";
+    TYPST_FONT_PATHS = "${config.home.homeDirectory}/.nix-profile/share/fonts:${config.home.homeDirectory}/.nix-profile/lib/X11/fonts";
   };
 
   # Ensure Nix profile binaries are on PATH for all shells (direnv, subshells, etc.)
@@ -118,6 +137,13 @@ in {
     "${config.home.homeDirectory}/.nix-profile/bin"
     "/nix/var/nix/profiles/default/bin"
   ];
+
+  xdg.enable = true;
+  xdg.configFile."uv/uv.toml" = {
+    text = ''
+      python-downloads = "manual"
+    '';
+  };
 
   programs.home-manager.enable = true;
 
@@ -127,8 +153,7 @@ in {
 
   programs.git = {
     enable = true;
-    delta.enable = true;
-    aliases = {
+    settings.alias = {
       st = "status";
       co = "checkout";
       br = "branch";
@@ -137,7 +162,12 @@ in {
       {path = git-user-conf;}
     ];
   };
-
+  
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+  }; 
+  
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
@@ -201,6 +231,8 @@ in {
       eval "$(/usr/bin/wsl2-ssh-agent)"
       # Enable 'did you mean' command correction
       export ENABLE_CORRECTION="true"
+      # Configure Typst font paths for NixOS/Home Manager
+      export TYPST_FONT_PATHS="$HOME/.nix-profile/share/fonts:$HOME/.nix-profile/lib/X11/fonts"
     '';
 
     envExtra = ''
