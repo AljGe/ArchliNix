@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  libs,
   ...
 }: let
   git-user-conf = "${config.home.homeDirectory}/.config/git/user.conf";
@@ -21,6 +22,7 @@ in {
   home.username = "archliNix";
   home.homeDirectory = "/home/archliNix";
   home.stateVersion = "25.05";
+  nixpkgs.config.allowUnfree = true;
   home.packages = (with pkgs; [
     # nix tools
     alejandra
@@ -36,6 +38,9 @@ in {
     nodejs_24
     pnpm
     uv
+    # cudaPackages.cuda_nvcc
+    cudaPackages.cudatoolkit
+
 
     # Filesystem & search
     dust
@@ -57,6 +62,7 @@ in {
     btop-cuda
     fastfetch
     procs
+    nvtopPackages.nvidia
 
     # Development & version control
     jujutsu
@@ -69,6 +75,7 @@ in {
     wget
     uutils-coreutils-noprefix
     dnsutils
+    tcping-rs
 
     # Documentation
     tealdeer
