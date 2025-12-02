@@ -3,68 +3,25 @@
   pkgs,
   libs,
   ...
-}: let
-  fastfetchSettings = {
-    logo = {
-      source = "arch_small";
-      padding = { right = 1; };
-    };
-    display = {
-      size = { binaryPrefix = "si"; };
-      color = "blue";
-      separator = "  ";
-    };
-    modules = [
-      "title"
-      "separator"
-      "os"
-      "host"
-      "kernel"
-      "uptime"
-      "packages"
-      "shell"
-      { type = "display"; compactType = "original"; key = "Resolution"; }
-      "de"
-      "wm"
-      "wmtheme"
-      "theme"
-      "icons"
-      "terminal"
-      { type = "terminalfont"; format = "{/2}{-}{/}{2}{?3} {3}{?}"; }
-      "cpu"
-      {
-        type = "gpu";
-        key = "GPU";
-        detectionMethod = "vulkan";
-        driverSpecific = true;
-        format = "{2}";
-      }
-      "memory"
-      "swap"
-      "disk"
-      "localip"
-      "battery"
-      "poweradapter"
-      "break"
-      "colors"
-    ];
-  };
+}:
+let
   git-user-conf = "${config.home.homeDirectory}/.config/git/user.conf";
   jj-user-conf = "${config.home.homeDirectory}/.config/jj/config.toml";
   devenv-with-uv = pkgs.writeShellApplication {
     name = "devenv";
-    runtimeInputs = [pkgs.devenv];
+    runtimeInputs = [ pkgs.devenv ];
     text = ''
       export UV_PYTHON_DOWNLOADS=manual
       exec ${pkgs.devenv}/bin/devenv "$@"
     '';
   };
-in {
+in
+{
   imports = [
     ./modules/colemak-dh.nix
     ./modules/librewolf.nix
   ];
-  xdg.configFile."fastfetch/config.jsonc".source = (pkgs.formats.json {}).generate "config.jsonc" fastfetchSettings;
+
   home.username = "archliNix";
   home.homeDirectory = "/home/archliNix";
   home.stateVersion = "25.05";
@@ -133,6 +90,7 @@ in {
       # other
       typst
       marp-cli
+      fastfetch
 
       # fonts
       atkinson-hyperlegible
@@ -140,14 +98,14 @@ in {
       noto-fonts-color-emoji
       nerd-fonts.jetbrains-mono
     ])
-    ++ [devenv-with-uv];
+    ++ [ devenv-with-uv ];
 
   sops = {
     age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
     defaultSopsFile = ./secrets/secrets.yaml;
-    secrets."example_secret" = {};
-    secrets."github_private_mail" = {};
-    secrets."github_private_name" = {};
+    secrets."example_secret" = { };
+    secrets."github_private_mail" = { };
+    secrets."github_private_name" = { };
     templates."example.env" = {
       content = ''
         EXAMPLE_SECRET=${config.sops.placeholder."example_secret"}
@@ -171,7 +129,7 @@ in {
         [ui]
           default-command = "log"
           editor = "nano"
-    '';
+      '';
       path = jj-user-conf;
     };
   };
@@ -212,7 +170,7 @@ in {
       }
     '';
   };
-  
+
   programs.home-manager.enable = true;
 
   fonts.fontconfig.enable = true;
@@ -233,7 +191,7 @@ in {
         sort_dir_first = true;
       };
     };
-    
+
     theme = {
       flavor = {
         use = "catppuccin-mocha";
@@ -249,7 +207,7 @@ in {
       br = "branch";
     };
     includes = [
-      {path = git-user-conf;}
+      { path = git-user-conf; }
     ];
   };
 

@@ -30,38 +30,43 @@
   };
 
   # Define what this flake builds.
-  outputs = {
-    self,
-    nixpkgs,
-    home-manager,
-    sops-nix,
-    nur,
-    nix-index-database,
-    ...
-  }: {
-    # Define a Home Manager configuration for a specific user and host.
-    # Using a unique name like "username@hostname" allows for managing
-    # multiple configurations from the same flake.
-    homeConfigurations."archliNix" = home-manager.lib.homeManagerConfiguration {
-      # Pass the nixpkgs collection to Home Manager.
-      # The architecture must match the host system.
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      # Specify the main module file for this configuration.
-      modules = [
-        sops-nix.homeManagerModule
-        nix-index-database.homeModules.nix-index
-        # Enable NUR overlay so pkgs.nur.repos.rycee.firefox-addons is available
-        ({
-          config,
-          pkgs,
-          ...
-        }: {
-          nixpkgs.overlays = [nur.overlays.default];
-        })
-        ./home.nix
-      ];
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      sops-nix,
+      nur,
+      nix-index-database,
+      ...
+    }:
+    {
+      # Define a Home Manager configuration for a specific user and host.
+      # Using a unique name like "username@hostname" allows for managing
+      # multiple configurations from the same flake.
+      homeConfigurations."archliNix" = home-manager.lib.homeManagerConfiguration {
+        # Pass the nixpkgs collection to Home Manager.
+        # The architecture must match the host system.
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        # Specify the main module file for this configuration.
+        modules = [
+          sops-nix.homeManagerModule
+          nix-index-database.homeModules.nix-index
+          # Enable NUR overlay so pkgs.nur.repos.rycee.firefox-addons is available
+          (
+            {
+              config,
+              pkgs,
+              ...
+            }:
+            {
+              nixpkgs.overlays = [ nur.overlays.default ];
+            }
+          )
+          ./home.nix
+        ];
+      };
     };
-  };
 
   nixConfig = {
     extra-substituters = [
