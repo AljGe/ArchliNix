@@ -4,6 +4,51 @@
   libs,
   ...
 }: let
+  fastfetchSettings = {
+    logo = {
+      source = "arch_small";
+      padding = { right = 1; };
+    };
+    display = {
+      size = { binaryPrefix = "si"; };
+      color = "blue";
+      separator = "  ";
+    };
+    modules = [
+      "title"
+      "separator"
+      "os"
+      "host"
+      "kernel"
+      "uptime"
+      "packages"
+      "shell"
+      { type = "display"; compactType = "original"; key = "Resolution"; }
+      "de"
+      "wm"
+      "wmtheme"
+      "theme"
+      "icons"
+      "terminal"
+      { type = "terminalfont"; format = "{/2}{-}{/}{2}{?3} {3}{?}"; }
+      "cpu"
+      {
+        type = "gpu";
+        key = "GPU";
+        detectionMethod = "vulkan";
+        driverSpecific = true;
+        format = "{2}";
+      }
+      "memory"
+      "swap"
+      "disk"
+      "localip"
+      "battery"
+      "poweradapter"
+      "break"
+      "colors"
+    ];
+  };
   git-user-conf = "${config.home.homeDirectory}/.config/git/user.conf";
   jj-user-conf = "${config.home.homeDirectory}/.config/jj/config.toml";
   devenv-with-uv = pkgs.writeShellApplication {
@@ -19,80 +64,83 @@ in {
     ./modules/colemak-dh.nix
     ./modules/librewolf.nix
   ];
+  xdg.configFile."fastfetch/config.jsonc".source = (pkgs.formats.json {}).generate "config.jsonc" fastfetchSettings;
   home.username = "archliNix";
   home.homeDirectory = "/home/archliNix";
   home.stateVersion = "25.05";
   nixpkgs.config.allowUnfree = true;
-  home.packages = (with pkgs; [
-    # nix tools
-    alejandra
-    nh
-    nix-search-tv
+  home.packages =
+    (with pkgs; [
+      # nix tools
+      alejandra
+      nh
+      nix-search-tv
+      nixfmt
 
-    # secrets
-    age
-    sops
-    magic-wormhole-rs
+      # secrets
+      age
+      sops
+      magic-wormhole-rs
 
-    # package managers and runtimes
-    nodejs_24
-    pnpm
-    uv
-    # cudaPackages.cuda_nvcc
-    cudaPackages.cudatoolkit
+      # package managers and runtimes
+      nodejs_24
+      pnpm
+      uv
 
+      # cudaPackages.cuda_nvcc
+      cudaPackages.cudatoolkit
 
-    # Filesystem & search
-    dust
-    eza
-    fd
-    ncdu
-    duf
-    ripgrep
+      # Filesystem & search
+      dust
+      eza
+      fd
+      ncdu
+      duf
+      ripgrep
 
-    # File content & data manipulation
-    micro
-    helix
-    bat
-    jq
-    sd
-    yq-go
+      # File content & data manipulation
+      micro
+      helix
+      bat
+      jq
+      sd
+      yq-go
 
-    # System monitoring & info
-    btop-cuda
-    fastfetch
-    procs
-    nvtopPackages.nvidia
+      # System monitoring & info
+      btop-cuda
+      procs
+      nvtopPackages.nvidia
 
-    # Development & version control
-    jujutsu
-    gh
-    glab
+      # Development & version control
+      jujutsu
+      gh
+      glab
 
-    # Network
-    openssh
-    rsync
-    wget
-    uutils-coreutils-noprefix
-    dnsutils
-    tcping-rs
+      # Network
+      openssh
+      rsync
+      wget
+      uutils-coreutils-noprefix
+      dnsutils
+      tcping-rs
 
-    # Documentation
-    tealdeer
+      # Documentation
+      tealdeer
 
-    # gui apps
-    tor-browser
-    
-    # other
-    typst
-    marp-cli
+      # gui apps
+      tor-browser
 
-    # fonts
-    atkinson-hyperlegible
-    dejavu_fonts
-    noto-fonts-color-emoji
-  ])
-  ++ [devenv-with-uv];
+      # other
+      typst
+      marp-cli
+
+      # fonts
+      atkinson-hyperlegible
+      dejavu_fonts
+      noto-fonts-color-emoji
+      nerd-fonts.jetbrains-mono
+    ])
+    ++ [devenv-with-uv];
 
   sops = {
     age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
@@ -123,7 +171,7 @@ in {
         [ui]
           default-command = "log"
           editor = "nano"
-      '';
+    '';
       path = jj-user-conf;
     };
   };
@@ -137,6 +185,7 @@ in {
     UV_PYTHON_DOWNLOADS = "manual";
     # EDITOR = "emacs";
     TYPST_FONT_PATHS = "${config.home.homeDirectory}/.nix-profile/share/fonts:${config.home.homeDirectory}/.nix-profile/lib/X11/fonts";
+    VK_DRIVER_FILES = "${config.home.homeDirectory}/.config/vulkan/icd.d/nvidia_wsl.json";
   };
 
   # Ensure Nix profile binaries are on PATH for all shells (direnv, subshells, etc.)
@@ -146,17 +195,51 @@ in {
   ];
 
   xdg.enable = true;
-  xdg.configFile."uv/uv.toml" = {
-    text = ''
+
+  xdg.configFile = {
+    "uv/uv.toml".text = ''
       python-downloads = "manual"
     '';
-  };
 
+    # --- ADD THIS BLOCK ---
+    "vulkan/icd.d/nvidia_wsl.json".text = ''
+      {
+        "file_format_version" : "1.0.0",
+        "ICD": {
+          "library_path": "/usr/lib/wsl/lib/libnvwgf2umx.so",
+          "api_version" : "1.3.0"
+        }
+      }
+    '';
+  };
+  
   programs.home-manager.enable = true;
 
   fonts.fontconfig.enable = true;
 
   my.colemakDH.enable = true;
+
+  programs.yazi = {
+    enable = true;
+    enableZshIntegration = true;
+    shellWrapperName = "y";
+
+    settings = {
+      manager = {
+        show_hidden = true;
+        sort_by = "natural";
+        sort_sensitive = false;
+        sort_reverse = false;
+        sort_dir_first = true;
+      };
+    };
+    
+    theme = {
+      flavor = {
+        use = "catppuccin-mocha";
+      };
+    };
+  };
 
   programs.git = {
     enable = true;
@@ -169,12 +252,12 @@ in {
       {path = git-user-conf;}
     ];
   };
-  
+
   programs.delta = {
     enable = true;
     enableGitIntegration = true;
-  }; 
-  
+  };
+
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
