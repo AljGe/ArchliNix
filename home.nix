@@ -67,6 +67,7 @@ in
       btop-cuda
       procs
       nvtopPackages.nvidia
+      stress
 
       # Development & version control
       jujutsu
