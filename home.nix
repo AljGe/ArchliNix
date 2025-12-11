@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   xdgConfigHome = config.xdg.configHome;
   profileDir = config.home.profileDirectory;
 
@@ -12,7 +13,7 @@
 
   devenvWithUv = pkgs.writeShellApplication {
     name = "devenv";
-    runtimeInputs = [pkgs.devenv];
+    runtimeInputs = [ pkgs.devenv ];
     text = ''
       export UV_PYTHON_DOWNLOADS=manual
       exec ${pkgs.devenv}/bin/devenv "$@"
@@ -92,7 +93,8 @@
       noto-fonts-color-emoji
     ];
   };
-in {
+in
+{
   imports = [
     ./modules/colemak-dh.nix
     ./modules/librewolf.nix
@@ -106,19 +108,17 @@ in {
   home.stateVersion = "25.05";
   nixpkgs.config.allowUnfree = true;
 
-  home.packages = lib.concatLists (lib.attrValues packageGroups) ++ [devenvWithUv];
+  home.packages = lib.concatLists (lib.attrValues packageGroups) ++ [ devenvWithUv ];
 
-  home.sessionVariables =
-    {
-      EDITOR = "nano";
-      LANG = "C.UTF-8";
-      LC_CTYPE = "C.UTF-8";
-      PERL_BADLANG = "0";
-      TYPST_FONT_PATHS = "${profileDir}/share/fonts:${profileDir}/lib/X11/fonts";
-      UV_PYTHON_DOWNLOADS = "manual";
-      VISUAL = "nano";
-      # EDITOR = "emacs";
-    };
+  home.sessionVariables = {
+    EDITOR = "nano";
+    LANG = "C.UTF-8";
+    LC_CTYPE = "C.UTF-8";
+    PERL_BADLANG = "0";
+    TYPST_FONT_PATHS = "${profileDir}/share/fonts:${profileDir}/lib/X11/fonts";
+    UV_PYTHON_DOWNLOADS = "manual";
+    VISUAL = "nano";
+  };
 
   # Ensure Nix profile binaries are on PATH for all shells (direnv, subshells, etc.)
   home.sessionPath = [
@@ -128,12 +128,11 @@ in {
 
   xdg.enable = true;
 
-  xdg.configFile =
-    {
-      "uv/uv.toml".text = ''
-        python-downloads = "manual"
-      '';
-    };
+  xdg.configFile = {
+    "uv/uv.toml".text = ''
+      python-downloads = "manual"
+    '';
+  };
 
   programs.home-manager.enable = true;
 
@@ -171,7 +170,7 @@ in {
       br = "branch";
     };
     includes = [
-      {path = gitUserConf;}
+      { path = gitUserConf; }
     ];
   };
 
