@@ -14,6 +14,7 @@
   gitUserConf = "${xdgConfigHome}/git/user.conf";
   jjUserConf = "${xdgConfigHome}/jj/config.toml";
   wslVkIcd = "${xdgConfigHome}/vulkan/icd.d/nvidia_wsl.json";
+  shellLdAppend = "$" + "{LD_LIBRARY_PATH:+:" + "$" + "{LD_LIBRARY_PATH}}";
 
   devenvWithUv = pkgs.writeShellApplication {
     name = "devenv";
@@ -158,7 +159,7 @@ in {
     };
 
   home.sessionVariablesExtra = optionalString isWsl ''
-    export LD_LIBRARY_PATH="/usr/lib/wsl/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+    export LD_LIBRARY_PATH="/usr/lib/wsl/lib${shellLdAppend}"
   '';
 
   # Ensure Nix profile binaries are on PATH for all shells (direnv, subshells, etc.)
