@@ -20,7 +20,7 @@ in {
 
   programs.gemini-cli = {
     enable = true;
-    defaultModel = "gemini-2.5-pro";
+    defaultModel = "gemini-3-pro";
   };
 
   programs.zsh = {
