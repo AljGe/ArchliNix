@@ -14,6 +14,7 @@
     mapAttrsToList;
 
   cfg = config.my.packages;
+  trimDesktop = config.wsl.trimDesktopPackages or false;
 
   baseGroups = with pkgs; {
     nixTools = [
@@ -119,25 +120,25 @@ in {
   options.my.packages = {
     enableCompute = mkOption {
       type = types.bool;
-      default = !(config.wsl.trimDesktopPackages or false);
+      default = !trimDesktop;
       description = "Include compute-heavy packages (CUDA toolkits, etc.).";
     };
 
     enableMonitoring = mkOption {
       type = types.bool;
-      default = !(config.wsl.trimDesktopPackages or false);
+      default = !trimDesktop;
       description = "Include monitoring/metrics packages.";
     };
 
     enableGui = mkOption {
       type = types.bool;
-      default = !(config.wsl.trimDesktopPackages or false);
+      default = !trimDesktop;
       description = "Include GUI applications.";
     };
 
     enableFonts = mkOption {
       type = types.bool;
-      default = !(config.wsl.trimDesktopPackages or false);
+      default = !trimDesktop;
       description = "Include additional fonts.";
     };
 

@@ -27,7 +27,7 @@ in {
       default = guiEnabled && !isWsl;
     };
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && !isWsl) {
     programs.librewolf = {
       enable = true;
       package = pkgs.librewolf;

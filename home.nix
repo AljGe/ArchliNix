@@ -4,6 +4,7 @@
   pkgs,
   ...
 }: let
+  isWsl = config.my.platform.isWsl;
   xdgConfigHome = config.xdg.configHome;
   profileDir = config.home.profileDirectory;
 
@@ -35,6 +36,10 @@ in {
   home.homeDirectory = "/home/archliNix";
   home.stateVersion = "25.05";
   nixpkgs.config.allowUnfree = true;
+
+  # WSL-aware defaults; toggle here to allow GUI/compute bits on WSL.
+  wsl.enable = isWsl;
+  wsl.trimDesktopPackages = isWsl;
 
   home.packages = selectedPackages;
 
