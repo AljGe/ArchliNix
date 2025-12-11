@@ -7,7 +7,14 @@
   shellLdAppend = "$" + "{LD_LIBRARY_PATH:+:" + "$" + "{LD_LIBRARY_PATH}}";
   xdgConfigHome = config.xdg.configHome;
 in {
-  options.wsl.enable = lib.mkEnableOption "WSL-specific settings";
+  options.wsl = {
+    enable = lib.mkEnableOption "WSL-specific settings";
+    trimDesktopPackages = lib.mkOption {
+      type = lib.types.bool;
+      default = isWsl;
+      description = "Skip GUI-only packages when running under WSL.";
+    };
+  };
 
   config = lib.mkIf (config.wsl.enable or isWsl) {
     home.sessionVariables.VK_DRIVER_FILES = "${xdgConfigHome}/vulkan/icd.d/nvidia_wsl.json";

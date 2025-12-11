@@ -19,6 +19,8 @@
     '';
   };
 
+  trimDesktopPackages = config.wsl.trimDesktopPackages or false;
+
   packageGroups = with pkgs; {
     nixTools = [
       alejandra
@@ -92,6 +94,12 @@
       noto-fonts-color-emoji
     ];
   };
+
+  packagesWithoutGui = lib.concatLists (lib.attrValues (builtins.removeAttrs packageGroups ["gui"]));
+  guiPackages = packageGroups.gui or [];
+  selectedPackages =
+    packagesWithoutGui
+    ++ lib.optionals (!trimDesktopPackages) guiPackages;
 in {
   imports = [
     ./modules/colemak-dh.nix
@@ -106,7 +114,7 @@ in {
   home.stateVersion = "25.05";
   nixpkgs.config.allowUnfree = true;
 
-  home.packages = lib.concatLists (lib.attrValues packageGroups) ++ [devenvWithUv];
+  home.packages = lib.unique (selectedPackages ++ [devenvWithUv]);
 
   home.sessionVariables = {
     EDITOR = "nano";
