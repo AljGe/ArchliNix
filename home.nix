@@ -1,11 +1,21 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }: let
-  git-user-conf = "${config.home.homeDirectory}/.config/git/user.conf";
-  jj-user-conf = "${config.home.homeDirectory}/.config/jj/config.toml";
-  devenv-with-uv = pkgs.writeShellApplication {
+  inherit (lib) mkBefore mkMerge optionalAttrs optionalString;
+
+  homeDir = config.home.homeDirectory;
+  xdgConfigHome = config.xdg.configHome;
+  profileDir = config.home.profileDirectory;
+  isWsl = builtins.pathExists "/proc/sys/fs/binfmt_misc/WSLInterop";
+
+  gitUserConf = "${xdgConfigHome}/git/user.conf";
+  jjUserConf = "${xdgConfigHome}/jj/config.toml";
+  wslVkIcd = "${xdgConfigHome}/vulkan/icd.d/nvidia_wsl.json";
+
+  devenvWithUv = pkgs.writeShellApplication {
     name = "devenv";
     runtimeInputs = [pkgs.devenv];
     text = ''
@@ -96,10 +106,10 @@ in {
       nerd-fonts.jetbrains-mono
       noto-fonts-color-emoji
     ])
-    ++ [devenv-with-uv];
+    ++ [devenvWithUv];
 
   sops = {
-    age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
+    age.keyFile = "${homeDir}/.config/sops/age/keys.txt";
     defaultSopsFile = ./secrets/secrets.yaml;
     secrets."example_secret" = {};
     secrets."github_private_mail" = {};
@@ -108,7 +118,7 @@ in {
       content = ''
         EXAMPLE_SECRET=${config.sops.placeholder."example_secret"}
       '';
-      path = "${config.home.homeDirectory}/.config/example/.env";
+      path = "${homeDir}/.config/example/.env";
     };
     templates."git-user.conf" = {
       content = ''
@@ -116,7 +126,7 @@ in {
           name = ${config.sops.placeholder."github_private_name"}
           email = ${config.sops.placeholder."github_private_mail"}
       '';
-      path = git-user-conf;
+      path = gitUserConf;
     };
     templates."jj-user.conf" = {
       content = ''
@@ -128,25 +138,32 @@ in {
           default-command = "log"
           editor = "nano"
       '';
-      path = jj-user-conf;
+      path = jjUserConf;
     };
   };
 
-  home.sessionVariables = {
-    EDITOR = "nano";
-    LANG = "C.UTF-8";
-    LC_CTYPE = "C.UTF-8";
-    PERL_BADLANG = "0";
-    TYPST_FONT_PATHS = "${config.home.homeDirectory}/.nix-profile/share/fonts:${config.home.homeDirectory}/.nix-profile/lib/X11/fonts";
-    UV_PYTHON_DOWNLOADS = "manual";
-    VISUAL = "nano";
-    VK_DRIVER_FILES = "${config.home.homeDirectory}/.config/vulkan/icd.d/nvidia_wsl.json";
-    # EDITOR = "emacs";
-  };
+  home.sessionVariables =
+    {
+      EDITOR = "nano";
+      LANG = "C.UTF-8";
+      LC_CTYPE = "C.UTF-8";
+      PERL_BADLANG = "0";
+      TYPST_FONT_PATHS = "${profileDir}/share/fonts:${profileDir}/lib/X11/fonts";
+      UV_PYTHON_DOWNLOADS = "manual";
+      VISUAL = "nano";
+      # EDITOR = "emacs";
+    }
+    // optionalAttrs isWsl {
+      VK_DRIVER_FILES = wslVkIcd;
+    };
+
+  home.sessionVariablesExtra = optionalString isWsl ''
+    export LD_LIBRARY_PATH="/usr/lib/wsl/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+  '';
 
   # Ensure Nix profile binaries are on PATH for all shells (direnv, subshells, etc.)
   home.sessionPath = [
-    "${config.home.homeDirectory}/.nix-profile/bin"
+    "${profileDir}/bin"
     "/nix/var/nix/profiles/default/bin"
   ];
 
@@ -204,7 +221,7 @@ in {
       br = "branch";
     };
     includes = [
-      {path = git-user-conf;}
+      {path = gitUserConf;}
     ];
   };
 
@@ -271,13 +288,8 @@ in {
       theme = "";
     };
 
-    initContent = pkgs.lib.mkMerge [
-      (pkgs.lib.mkBefore ''
-        # Persistently configure LD_LIBRARY_PATH for WSL2 GPU passthrough
-        export LD_LIBRARY_PATH="/usr/lib/wsl/lib''${LD_LIBRARY_PATH:+:}''$LD_LIBRARY_PATH"
-        # Configure Typst font paths for NixOS/Home Manager
-        export TYPST_FONT_PATHS="$HOME/.nix-profile/share/fonts:$HOME/.nix-profile/lib/X11/fonts"
-
+    initContent = mkMerge [
+      (mkBefore ''
         # Detect Cursor or VS Code Agent execution
         if [[ -n "$ANTIGRAVITY_AGENT" ]] || [[ -n "$CURSOR_TRACE_ID" ]] || [[ "$TERM_PROGRAM" == "vscode" && -z "$TERM_PROGRAM_VERSION" ]]; then
           # Set a very simple prompt that robots love
@@ -301,7 +313,11 @@ in {
         export LESS='-RFX --mouse'
         export HISTORY_BASE="$HOME/.local/state/zsh/history"
         # Initialize SSH agent forwarding from Windows to WSL
-        eval "$(/usr/bin/wsl2-ssh-agent)"
+        if ${if isWsl then "true" else "false"}; then
+          if [ -x /usr/bin/wsl2-ssh-agent ]; then
+            eval "$(/usr/bin/wsl2-ssh-agent)"
+          fi
+        fi
         # Enable 'did you mean' command correction
         export ENABLE_CORRECTION="true"
 
@@ -316,8 +332,8 @@ in {
     ];
 
     envExtra = ''
-      if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
-        . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+      if [ -f "${profileDir}/etc/profile.d/hm-session-vars.sh" ]; then
+        . "${profileDir}/etc/profile.d/hm-session-vars.sh"
       fi
     '';
   };
