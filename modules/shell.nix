@@ -7,7 +7,7 @@
   inherit (lib) mkBefore mkMerge;
   profileDir = config.home.profileDirectory;
   # Explicit boolean OR to avoid treating the default as a function
-  isWsl = (config.wsl.enable or false) || builtins.pathExists "/proc/sys/fs/binfmt_misc/WSLInterop";
+  isWsl = config.my.platform.isWsl or false;
 in {
   programs.direnv = {
     enable = true;

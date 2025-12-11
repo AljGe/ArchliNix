@@ -4,11 +4,18 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkOption types concatLists optionals unique;
+  inherit (lib)
+    mkOption
+    types
+    concatLists
+    optionals
+    unique
+    attrValues
+    mapAttrsToList;
 
   cfg = config.my.packages;
 
-  packageGroups = with pkgs; {
+  baseGroups = with pkgs; {
     nixTools = [
       alejandra
       nh
@@ -24,9 +31,6 @@
       nodejs_24
       pnpm
       uv
-    ];
-    compute = [
-      cudaPackages.cudatoolkit
     ];
     filesystem = [
       duf
@@ -44,12 +48,6 @@
       sd
       yq-go
     ];
-    monitoring = [
-      btop-cuda
-      nvtopPackages.nvidia
-      procs
-      stress
-    ];
     dev = [
       gh
       glab
@@ -66,40 +64,55 @@
     docs = [
       tealdeer
     ];
-    gui = [
-      tor-browser
-    ];
-    misc = [
-      fastfetch
-      marp-cli
-      typst
-    ];
-    fonts = [
-      atkinson-hyperlegible
-      dejavu_fonts
-      nerd-fonts.jetbrains-mono
-      noto-fonts-color-emoji
-    ];
   };
 
-  basePackages =
-    packageGroups.nixTools
-    ++ packageGroups.secrets
-    ++ packageGroups.packageManagers
-    ++ packageGroups.filesystem
-    ++ packageGroups.content
-    ++ packageGroups.dev
-    ++ packageGroups.network
-    ++ packageGroups.docs;
+  optionalGroups = with pkgs; {
+    compute = {
+      enable = cfg.enableCompute;
+      packages = [cudaPackages.cudatoolkit];
+    };
+    monitoring = {
+      enable = cfg.enableMonitoring;
+      packages = [
+        btop-cuda
+        nvtopPackages.nvidia
+        procs
+        stress
+      ];
+    };
+    gui = {
+      enable = cfg.enableGui;
+      packages = [tor-browser];
+    };
+    fonts = {
+      enable = cfg.enableFonts;
+      packages = [
+        atkinson-hyperlegible
+        dejavu_fonts
+        nerd-fonts.jetbrains-mono
+        noto-fonts-color-emoji
+      ];
+    };
+    misc = {
+      enable = cfg.enableMisc;
+      packages = [
+        fastfetch
+        marp-cli
+        typst
+      ];
+    };
+  };
+
+  basePackages = concatLists (attrValues baseGroups);
 
   optionalPackages =
     concatLists (
-      optionals cfg.enableCompute [packageGroups.compute]
-      ++ optionals cfg.enableMonitoring [packageGroups.monitoring]
-      ++ optionals cfg.enableGui [packageGroups.gui]
-      ++ optionals cfg.enableFonts [packageGroups.fonts]
-      ++ optionals cfg.enableMisc [packageGroups.misc]
+      mapAttrsToList (_: group: optionals group.enable group.packages) optionalGroups
     );
+
+  packageGroups =
+    baseGroups
+    // (lib.mapAttrs (_: group: group.packages) optionalGroups);
 
   selectedPackages = unique (basePackages ++ optionalPackages);
 in {

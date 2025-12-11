@@ -22,6 +22,7 @@
   selectedPackages = lib.unique (config.my.packages.selected ++ [devenvWithUv]);
 in {
   imports = [
+    ./modules/platform.nix
     ./modules/colemak-dh.nix
     ./modules/librewolf.nix
     ./modules/packages.nix

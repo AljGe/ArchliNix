@@ -4,7 +4,7 @@
   ...
 }: let
   cfg = config.wsl;
-  isWsl = builtins.pathExists "/proc/sys/fs/binfmt_misc/WSLInterop";
+  isWsl = config.my.platform.isWsl or false;
   shellLdAppend = "$" + "{LD_LIBRARY_PATH:+:" + "$" + "{LD_LIBRARY_PATH}}";
   xdgConfigHome = config.xdg.configHome;
 in {
