@@ -8,7 +8,7 @@
 
   cfg = config.my.librewolf;
   isWsl = config.my.platform.isWsl or false;
-  guiEnabled = config.my.packages.enableGui or true;
+  guiEnabled = config.my.packages.enableGui;
 
   mkEngine = {
     template,

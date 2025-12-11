@@ -119,25 +119,25 @@ in {
   options.my.packages = {
     enableCompute = mkOption {
       type = types.bool;
-      default = true;
+      default = !(config.wsl.trimDesktopPackages or false);
       description = "Include compute-heavy packages (CUDA toolkits, etc.).";
     };
 
     enableMonitoring = mkOption {
       type = types.bool;
-      default = true;
+      default = !(config.wsl.trimDesktopPackages or false);
       description = "Include monitoring/metrics packages.";
     };
 
     enableGui = mkOption {
       type = types.bool;
-      default = true;
+      default = !(config.wsl.trimDesktopPackages or false);
       description = "Include GUI applications.";
     };
 
     enableFonts = mkOption {
       type = types.bool;
-      default = true;
+      default = !(config.wsl.trimDesktopPackages or false);
       description = "Include additional fonts.";
     };
 

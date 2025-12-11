@@ -33,10 +33,5 @@ in {
         }
       }
     '';
-
-    my.packages.enableCompute = lib.mkDefault (!cfg.trimDesktopPackages);
-    my.packages.enableMonitoring = lib.mkDefault (!cfg.trimDesktopPackages);
-    my.packages.enableGui = lib.mkDefault (!cfg.trimDesktopPackages);
-    my.packages.enableFonts = lib.mkDefault (!cfg.trimDesktopPackages);
   };
 }
