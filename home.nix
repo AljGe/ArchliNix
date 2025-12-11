@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  libs,
   ...
 }: let
   git-user-conf = "${config.home.homeDirectory}/.config/git/user.conf";
@@ -29,13 +28,13 @@ in {
       # nix tools
       alejandra
       nh
-      nix-search-tv
       nixfmt
+      nix-search-tv
 
       # secrets
       age
-      sops
       magic-wormhole-rs
+      sops
 
       # package managers and runtimes
       nodejs_24
@@ -46,39 +45,39 @@ in {
       cudaPackages.cudatoolkit
 
       # Filesystem & search
+      duf
       dust
       eza
       fd
       ncdu
-      duf
       ripgrep
 
       # File content & data manipulation
-      micro
-      helix
       bat
+      helix
       jq
+      micro
       sd
       yq-go
 
       # System monitoring & info
       btop-cuda
-      procs
       nvtopPackages.nvidia
+      procs
       stress
 
       # Development & version control
-      jujutsu
       gh
       glab
+      jujutsu
 
       # Network
+      dnsutils
       openssh
       rsync
-      wget
-      uutils-coreutils-noprefix
-      dnsutils
       tcping-rs
+      uutils-coreutils-noprefix
+      wget
 
       # Documentation
       tealdeer
@@ -87,15 +86,15 @@ in {
       tor-browser
 
       # other
-      typst
-      marp-cli
       fastfetch
+      marp-cli
+      typst
 
       # fonts
       atkinson-hyperlegible
       dejavu_fonts
-      noto-fonts-color-emoji
       nerd-fonts.jetbrains-mono
+      noto-fonts-color-emoji
     ])
     ++ [devenv-with-uv];
 
@@ -135,14 +134,14 @@ in {
 
   home.sessionVariables = {
     EDITOR = "nano";
-    VISUAL = "nano";
     LANG = "C.UTF-8";
     LC_CTYPE = "C.UTF-8";
     PERL_BADLANG = "0";
-    UV_PYTHON_DOWNLOADS = "manual";
-    # EDITOR = "emacs";
     TYPST_FONT_PATHS = "${config.home.homeDirectory}/.nix-profile/share/fonts:${config.home.homeDirectory}/.nix-profile/lib/X11/fonts";
+    UV_PYTHON_DOWNLOADS = "manual";
+    VISUAL = "nano";
     VK_DRIVER_FILES = "${config.home.homeDirectory}/.config/vulkan/icd.d/nvidia_wsl.json";
+    # EDITOR = "emacs";
   };
 
   # Ensure Nix profile binaries are on PATH for all shells (direnv, subshells, etc.)
@@ -158,7 +157,6 @@ in {
       python-downloads = "manual"
     '';
 
-    # --- ADD THIS BLOCK ---
     "vulkan/icd.d/nvidia_wsl.json".text = ''
       {
         "file_format_version" : "1.0.0",
