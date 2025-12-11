@@ -10,4 +10,3 @@ in {
     description = "Whether the system is running under WSL (auto-detected, overridable).";
   };
 }
-
