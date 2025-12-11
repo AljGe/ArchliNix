@@ -3,20 +3,18 @@
   pkgs,
   libs,
   ...
-}:
-let
+}: let
   git-user-conf = "${config.home.homeDirectory}/.config/git/user.conf";
   jj-user-conf = "${config.home.homeDirectory}/.config/jj/config.toml";
   devenv-with-uv = pkgs.writeShellApplication {
     name = "devenv";
-    runtimeInputs = [ pkgs.devenv ];
+    runtimeInputs = [pkgs.devenv];
     text = ''
       export UV_PYTHON_DOWNLOADS=manual
       exec ${pkgs.devenv}/bin/devenv "$@"
     '';
   };
-in
-{
+in {
   imports = [
     ./modules/colemak-dh.nix
     ./modules/librewolf.nix
@@ -99,14 +97,14 @@ in
       noto-fonts-color-emoji
       nerd-fonts.jetbrains-mono
     ])
-    ++ [ devenv-with-uv ];
+    ++ [devenv-with-uv];
 
   sops = {
     age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
     defaultSopsFile = ./secrets/secrets.yaml;
-    secrets."example_secret" = { };
-    secrets."github_private_mail" = { };
-    secrets."github_private_name" = { };
+    secrets."example_secret" = {};
+    secrets."github_private_mail" = {};
+    secrets."github_private_name" = {};
     templates."example.env" = {
       content = ''
         EXAMPLE_SECRET=${config.sops.placeholder."example_secret"}
@@ -208,7 +206,7 @@ in
       br = "branch";
     };
     includes = [
-      { path = git-user-conf; }
+      {path = git-user-conf;}
     ];
   };
 
@@ -220,6 +218,10 @@ in
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
+    config.global = {
+      warn_timeout = "0s"; # Don't warn about slow loading
+      hide_env_diff = true; # Hides "export +VIRTUAL_ENV..."
+    };
   };
   programs.gemini-cli = {
     enable = true;
@@ -271,18 +273,49 @@ in
       theme = "";
     };
 
-    initContent = ''
-      export LESS='-RFX --mouse'
-      export HISTORY_BASE="$HOME/.local/state/zsh/history"
-      # Persistently configure LD_LIBRARY_PATH for WSL2 GPU passthrough
-      export LD_LIBRARY_PATH="/usr/lib/wsl/lib''${LD_LIBRARY_PATH:+:}''$LD_LIBRARY_PATH"
-      # Initialize SSH agent forwarding from Windows to WSL
-      eval "$(/usr/bin/wsl2-ssh-agent)"
-      # Enable 'did you mean' command correction
-      export ENABLE_CORRECTION="true"
-      # Configure Typst font paths for NixOS/Home Manager
-      export TYPST_FONT_PATHS="$HOME/.nix-profile/share/fonts:$HOME/.nix-profile/lib/X11/fonts"
-    '';
+    initContent = pkgs.lib.mkMerge [
+      (pkgs.lib.mkBefore ''
+        # Persistently configure LD_LIBRARY_PATH for WSL2 GPU passthrough
+        export LD_LIBRARY_PATH="/usr/lib/wsl/lib''${LD_LIBRARY_PATH:+:}''$LD_LIBRARY_PATH"
+        # Configure Typst font paths for NixOS/Home Manager
+        export TYPST_FONT_PATHS="$HOME/.nix-profile/share/fonts:$HOME/.nix-profile/lib/X11/fonts"
+
+        # Detect Cursor or VS Code Agent execution
+        if [[ -n "$ANTIGRAVITY_AGENT" ]] || [[ -n "$CURSOR_TRACE_ID" ]] || [[ "$TERM_PROGRAM" == "vscode" && -z "$TERM_PROGRAM_VERSION" ]]; then
+          # Set a very simple prompt that robots love
+          export PS1='%# '
+          export PROMPT='%# '
+
+          # Disable fancy features that confuse agents
+          unset RPROMPT
+          export TERM=xterm-256color
+          export DIRENV_LOG_FORMAT=""
+
+          # Explicitly unset handlers that might hang the agent
+          unset -f command_not_found_handler 2>/dev/null || true
+
+          # Stop processing the rest of the file (skips P10k, OhMyZsh, integrations)
+          return
+        fi
+      '')
+
+      ''
+        export LESS='-RFX --mouse'
+        export HISTORY_BASE="$HOME/.local/state/zsh/history"
+        # Initialize SSH agent forwarding from Windows to WSL
+        eval "$(/usr/bin/wsl2-ssh-agent)"
+        # Enable 'did you mean' command correction
+        export ENABLE_CORRECTION="true"
+
+        # :: HUMAN MODE ::
+        if [[ -z "$ANTIGRAVITY_AGENT" && -z "$CURSOR_TRACE_ID" ]]; then
+          eval "$(starship init zsh)"
+        else
+          export PS1='%# '
+          unset RPROMPT
+        fi
+      ''
+    ];
 
     envExtra = ''
       if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
@@ -290,8 +323,8 @@ in
       fi
     '';
   };
+
   # programs.command-not-found disabled in favor of nix-index integration
-  # Use nix-index for command-not-found suggestions with prebuilt databasef
   programs.nix-index = {
     enable = true;
     enableZshIntegration = true;
@@ -303,7 +336,9 @@ in
   };
   programs.starship = {
     enable = true;
-    enableZshIntegration = true;
+    enableZshIntegration = false;
+    settings.cmd_duration.disabled = true;
+    settings.scan_timeout = 10;
   };
   programs.fzf = {
     enable = true;
@@ -316,9 +351,4 @@ in
     enable = true;
     enableZshIntegration = true;
   };
-  # programs.atuin = {
-  #   enable = true;
-  #   enableZshIntegration = true;
-  # 	settings = { auto_sync = false; }; # set true if you want sync
-  # };
 }

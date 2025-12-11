@@ -3,23 +3,19 @@
   lib,
   pkgs,
   ...
-}:
-let
-  mkEngine =
-    {
-      template,
-      params ? [ ],
-      icon ? null,
-    }:
-    let
-      url = { inherit template params; };
-    in
+}: let
+  mkEngine = {
+    template,
+    params ? [],
+    icon ? null,
+  }: let
+    url = {inherit template params;};
+  in
     lib.filterAttrs (k: v: v != null) {
-      urls = [ url ];
+      urls = [url];
       inherit icon;
     };
-in
-{
+in {
   programs.librewolf = {
     enable = true;
     package = pkgs.librewolf;
