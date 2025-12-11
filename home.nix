@@ -170,21 +170,23 @@ in {
 
   xdg.enable = true;
 
-  xdg.configFile = {
-    "uv/uv.toml".text = ''
-      python-downloads = "manual"
-    '';
-
-    "vulkan/icd.d/nvidia_wsl.json".text = ''
-      {
-        "file_format_version" : "1.0.0",
-        "ICD": {
-          "library_path": "/usr/lib/wsl/lib/libnvwgf2umx.so",
-          "api_version" : "1.3.0"
+  xdg.configFile =
+    {
+      "uv/uv.toml".text = ''
+        python-downloads = "manual"
+      '';
+    }
+    // optionalAttrs isWsl {
+      "vulkan/icd.d/nvidia_wsl.json".text = ''
+        {
+          "file_format_version" : "1.0.0",
+          "ICD": {
+            "library_path": "/usr/lib/wsl/lib/libnvwgf2umx.so",
+            "api_version" : "1.3.0"
+          }
         }
-      }
-    '';
-  };
+      '';
+    };
 
   programs.home-manager.enable = true;
 
