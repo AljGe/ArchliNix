@@ -136,14 +136,12 @@ in {
 
     packageGroups = mkOption {
       type = types.attrsOf (types.listOf types.package);
-      default = {};
       readOnly = true;
       description = "Defined package groups for the home profile.";
     };
 
     selected = mkOption {
       type = types.listOf types.package;
-      default = [];
       readOnly = true;
       description = "Flattened list of packages built from enabled groups.";
     };
