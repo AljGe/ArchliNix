@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   inherit (lib) mkBefore mkMerge;
   profileDir = config.home.profileDirectory;
   # Explicit boolean OR to avoid treating the default as a function
@@ -88,7 +92,11 @@ in {
         export LESS='-RFX --mouse'
         export HISTORY_BASE="$HOME/.local/state/zsh/history"
         # Initialize SSH agent forwarding from Windows to WSL
-        if ${if isWsl then "true" else "false"}; then
+        if ${
+          if isWsl
+          then "true"
+          else "false"
+        }; then
           if [ -x /usr/bin/wsl2-ssh-agent ]; then
             eval "$(/usr/bin/wsl2-ssh-agent)"
           fi
@@ -144,4 +152,3 @@ in {
     enableZshIntegration = true;
   };
 }
-

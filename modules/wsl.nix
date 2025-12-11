@@ -1,5 +1,8 @@
-{ config, lib, ... }:
-let
+{
+  config,
+  lib,
+  ...
+}: let
   isWsl = builtins.pathExists "/proc/sys/fs/binfmt_misc/WSLInterop";
   shellLdAppend = "$" + "{LD_LIBRARY_PATH:+:" + "$" + "{LD_LIBRARY_PATH}}";
   xdgConfigHome = config.xdg.configHome;
@@ -24,4 +27,3 @@ in {
     '';
   };
 }
-

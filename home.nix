@@ -3,8 +3,7 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   xdgConfigHome = config.xdg.configHome;
   profileDir = config.home.profileDirectory;
 
@@ -13,7 +12,7 @@ let
 
   devenvWithUv = pkgs.writeShellApplication {
     name = "devenv";
-    runtimeInputs = [ pkgs.devenv ];
+    runtimeInputs = [pkgs.devenv];
     text = ''
       export UV_PYTHON_DOWNLOADS=manual
       exec ${pkgs.devenv}/bin/devenv "$@"
@@ -93,8 +92,7 @@ let
       noto-fonts-color-emoji
     ];
   };
-in
-{
+in {
   imports = [
     ./modules/colemak-dh.nix
     ./modules/librewolf.nix
@@ -108,7 +106,7 @@ in
   home.stateVersion = "25.05";
   nixpkgs.config.allowUnfree = true;
 
-  home.packages = lib.concatLists (lib.attrValues packageGroups) ++ [ devenvWithUv ];
+  home.packages = lib.concatLists (lib.attrValues packageGroups) ++ [devenvWithUv];
 
   home.sessionVariables = {
     EDITOR = "nano";
@@ -170,7 +168,7 @@ in
       br = "branch";
     };
     includes = [
-      { path = gitUserConf; }
+      {path = gitUserConf;}
     ];
   };
 

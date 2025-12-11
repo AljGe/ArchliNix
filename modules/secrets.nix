@@ -1,5 +1,4 @@
-{ config, ... }:
-let
+{config, ...}: let
   homeDir = config.home.homeDirectory;
   xdgConfigHome = config.xdg.configHome;
   gitUserConf = "${xdgConfigHome}/git/user.conf";
@@ -39,4 +38,3 @@ in {
     };
   };
 }
-
