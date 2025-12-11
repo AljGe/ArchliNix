@@ -3,6 +3,7 @@
   lib,
   ...
 }: let
+  cfg = config.wsl;
   isWsl = builtins.pathExists "/proc/sys/fs/binfmt_misc/WSLInterop";
   shellLdAppend = "$" + "{LD_LIBRARY_PATH:+:" + "$" + "{LD_LIBRARY_PATH}}";
   xdgConfigHome = config.xdg.configHome;
@@ -16,7 +17,7 @@ in {
     };
   };
 
-  config = lib.mkIf (config.wsl.enable or isWsl) {
+  config = lib.mkIf (cfg.enable or isWsl) {
     home.sessionVariables.VK_DRIVER_FILES = "${xdgConfigHome}/vulkan/icd.d/nvidia_wsl.json";
 
     home.sessionVariablesExtra = ''
@@ -32,5 +33,10 @@ in {
         }
       }
     '';
+
+    my.packages.enableCompute = lib.mkDefault (!cfg.trimDesktopPackages);
+    my.packages.enableMonitoring = lib.mkDefault (!cfg.trimDesktopPackages);
+    my.packages.enableGui = lib.mkDefault (!cfg.trimDesktopPackages);
+    my.packages.enableFonts = lib.mkDefault (!cfg.trimDesktopPackages);
   };
 }

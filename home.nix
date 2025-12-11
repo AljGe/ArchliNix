@@ -19,91 +19,12 @@
     '';
   };
 
-  trimDesktopPackages = config.wsl.trimDesktopPackages or false;
-
-  packageGroups = with pkgs; {
-    nixTools = [
-      alejandra
-      nh
-      nixfmt
-      nix-search-tv
-    ];
-    secrets = [
-      age
-      magic-wormhole-rs
-      sops
-    ];
-    packageManagers = [
-      nodejs_24
-      pnpm
-      uv
-    ];
-    compute = [
-      cudaPackages.cudatoolkit
-    ];
-    filesystem = [
-      duf
-      dust
-      eza
-      fd
-      ncdu
-      ripgrep
-    ];
-    content = [
-      bat
-      helix
-      jq
-      micro
-      sd
-      yq-go
-    ];
-    monitoring = [
-      btop-cuda
-      nvtopPackages.nvidia
-      procs
-      stress
-    ];
-    dev = [
-      gh
-      glab
-      jujutsu
-    ];
-    network = [
-      dnsutils
-      openssh
-      rsync
-      tcping-rs
-      uutils-coreutils-noprefix
-      wget
-    ];
-    docs = [
-      tealdeer
-    ];
-    gui = [
-      tor-browser
-    ];
-    misc = [
-      fastfetch
-      marp-cli
-      typst
-    ];
-    fonts = [
-      atkinson-hyperlegible
-      dejavu_fonts
-      nerd-fonts.jetbrains-mono
-      noto-fonts-color-emoji
-    ];
-  };
-
-  packagesWithoutGui = lib.concatLists (lib.attrValues (builtins.removeAttrs packageGroups ["gui"]));
-  guiPackages = packageGroups.gui or [];
-  selectedPackages =
-    packagesWithoutGui
-    ++ lib.optionals (!trimDesktopPackages) guiPackages;
+  selectedPackages = lib.unique (config.my.packages.selected ++ [devenvWithUv]);
 in {
   imports = [
     ./modules/colemak-dh.nix
     ./modules/librewolf.nix
+    ./modules/packages.nix
     ./modules/secrets.nix
     ./modules/shell.nix
     ./modules/wsl.nix
@@ -114,7 +35,7 @@ in {
   home.stateVersion = "25.05";
   nixpkgs.config.allowUnfree = true;
 
-  home.packages = lib.unique (selectedPackages ++ [devenvWithUv]);
+  home.packages = selectedPackages;
 
   home.sessionVariables = {
     EDITOR = "nano";
