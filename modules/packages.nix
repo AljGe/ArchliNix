@@ -4,14 +4,16 @@
   pkgs,
   ...
 }: let
-  inherit (lib)
+  inherit
+    (lib)
     mkOption
     types
     concatLists
     optionals
     unique
     attrValues
-    mapAttrsToList;
+    mapAttrsToList
+    ;
 
   cfg = config.my.packages;
   trimDesktop = config.wsl.trimDesktopPackages or false;
@@ -106,10 +108,9 @@
 
   basePackages = concatLists (attrValues baseGroups);
 
-  optionalPackages =
-    concatLists (
-      mapAttrsToList (_: group: optionals group.enable group.packages) optionalGroups
-    );
+  optionalPackages = concatLists (
+    mapAttrsToList (_: group: optionals group.enable group.packages) optionalGroups
+  );
 
   packageGroups =
     baseGroups
@@ -166,4 +167,3 @@ in {
     my.packages.selected = selectedPackages;
   };
 }
-

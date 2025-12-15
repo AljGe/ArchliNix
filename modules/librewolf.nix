@@ -23,7 +23,8 @@
     };
 in {
   options.my.librewolf.enable =
-    mkEnableOption "Librewolf profile and hardening" // {
+    mkEnableOption "Librewolf profile and hardening"
+    // {
       default = guiEnabled && !isWsl;
     };
 
@@ -244,4 +245,3 @@ in {
     };
   };
 }
-

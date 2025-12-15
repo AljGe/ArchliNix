@@ -99,6 +99,12 @@ in {
         }; then
           if [ -x /usr/bin/wsl2-ssh-agent ]; then
             eval "$(/usr/bin/wsl2-ssh-agent)"
+            # Check for stale socket (Connection refused)
+            ssh-add -l >/dev/null 2>&1
+            if [ $? -eq 2 ]; then
+              rm -f "$SSH_AUTH_SOCK"
+              eval "$(/usr/bin/wsl2-ssh-agent)"
+            fi
           fi
         fi
         # Enable 'did you mean' command correction

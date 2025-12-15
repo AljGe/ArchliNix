@@ -1,7 +1,4 @@
-{
-  lib,
-  ...
-}: let
+{lib, ...}: let
   wslInterop = builtins.pathExists "/proc/sys/fs/binfmt_misc/WSLInterop";
   wslDistro = (builtins.getEnv "WSL_DISTRO_NAME") != "";
   kernelVersion =
