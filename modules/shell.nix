@@ -92,19 +92,20 @@ in {
         export LESS='-RFX --mouse'
         export HISTORY_BASE="$HOME/.local/state/zsh/history"
         # Initialize SSH agent forwarding from Windows to WSL
-        if ${
-          if isWsl
-          then "true"
-          else "false"
-        }; then
-          if [ -x /usr/bin/wsl2-ssh-agent ]; then
-            eval "$(/usr/bin/wsl2-ssh-agent)"
-            # Check for stale socket (Connection refused)
-            ssh-add -l >/dev/null 2>&1
-            if [ $? -eq 2 ]; then
-              rm -f "$SSH_AUTH_SOCK"
-              eval "$(/usr/bin/wsl2-ssh-agent)"
-            fi
+        if [ -x /usr/bin/wsl2-ssh-agent ]; then
+          # Always try to init
+          eval "$(/usr/bin/wsl2-ssh-agent)" > /dev/null
+
+          # Restore correct sock path if eval failed or behaved weirdly
+          if [[ -z "$SSH_AUTH_SOCK" ]]; then
+            export SSH_AUTH_SOCK="$HOME/.ssh/wsl2-ssh-agent.sock"
+          fi
+
+          # Check for stale socket (Connection refused = 2)
+          ssh-add -l >/dev/null 2>&1
+          if [ $? -eq 2 ]; then
+            rm -f "$SSH_AUTH_SOCK"
+            eval "$(/usr/bin/wsl2-ssh-agent)" > /dev/null
           fi
         fi
         # Enable 'did you mean' command correction
