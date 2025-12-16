@@ -38,7 +38,7 @@ in {
   nixpkgs.config.allowUnfree = true;
 
   # WSL-aware defaults; toggle here to allow GUI/compute bits on WSL.
-  wsl.enable = isWsl;
+  wsl.enable = true;
   wsl.trimDesktopPackages = isWsl;
 
   home.packages = selectedPackages;

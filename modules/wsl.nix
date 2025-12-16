@@ -24,6 +24,10 @@ in {
       export LD_LIBRARY_PATH="/usr/lib/wsl/lib${shellLdAppend}"
     '';
 
+    programs.zsh.envExtra = ''
+      export LD_LIBRARY_PATH="/usr/lib/wsl/lib${shellLdAppend}"
+    '';
+
     xdg.configFile."vulkan/icd.d/nvidia_wsl.json".text = ''
       {
         "file_format_version" : "1.0.0",

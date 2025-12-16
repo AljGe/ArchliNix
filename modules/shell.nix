@@ -3,14 +3,12 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib) mkBefore mkMerge;
   profileDir = config.home.profileDirectory;
   # Explicit boolean OR to avoid treating the default as a function
   isWsl = config.my.platform.isWsl or false;
-in
-{
+in {
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
