@@ -3,9 +3,9 @@
   lib,
   pkgs,
   ...
-}: let
-  inherit
-    (lib)
+}:
+let
+  inherit (lib)
     mkOption
     types
     concatLists
@@ -72,7 +72,7 @@
   optionalGroups = with pkgs; {
     compute = {
       enable = cfg.enableCompute;
-      packages = [cudaPackages.cudatoolkit];
+      packages = [ cudaPackages.cudatoolkit ];
     };
     monitoring = {
       enable = cfg.enableMonitoring;
@@ -85,7 +85,7 @@
     };
     gui = {
       enable = cfg.enableGui;
-      packages = [tor-browser];
+      packages = [ tor-browser ];
     };
     fonts = {
       enable = cfg.enableFonts;
@@ -94,6 +94,8 @@
         dejavu_fonts
         nerd-fonts.jetbrains-mono
         noto-fonts-color-emoji
+        roboto
+        corefonts
       ];
     };
     misc = {
@@ -112,12 +114,11 @@
     mapAttrsToList (_: group: optionals group.enable group.packages) optionalGroups
   );
 
-  packageGroups =
-    baseGroups
-    // (lib.mapAttrs (_: group: group.packages) optionalGroups);
+  packageGroups = baseGroups // (lib.mapAttrs (_: group: group.packages) optionalGroups);
 
   selectedPackages = unique (basePackages ++ optionalPackages);
-in {
+in
+{
   options.my.packages = {
     enableCompute = mkOption {
       type = types.bool;
