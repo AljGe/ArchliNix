@@ -44,6 +44,7 @@ in {
       nhs = "nh search";
       wormhole = "wormhole-rs";
       magic-wormhole = "wormhole-rs";
+      docling = "LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath [pkgs.mesa pkgs.libGL pkgs.stdenv.cc.cc.lib]}:\$LD_LIBRARY_PATH TORCH_DEVICE=cuda uvx docling";
       marker = "TORCH_DEVICE=cuda uvx --with psutil --from marker-pdf marker";
     };
 
