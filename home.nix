@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   isWsl = config.my.platform.isWsl;
   xdgConfigHome = config.xdg.configHome;
   profileDir = config.home.profileDirectory;
@@ -13,15 +14,16 @@
 
   devenvWithUv = pkgs.writeShellApplication {
     name = "devenv";
-    runtimeInputs = [pkgs.devenv];
+    runtimeInputs = [ pkgs.devenv ];
     text = ''
       export UV_PYTHON_DOWNLOADS=manual
       exec ${pkgs.devenv}/bin/devenv "$@"
     '';
   };
 
-  selectedPackages = lib.unique (config.my.packages.selected ++ [devenvWithUv]);
-in {
+  selectedPackages = lib.unique (config.my.packages.selected ++ [ devenvWithUv ]);
+in
+{
   imports = [
     ./modules/platform.nix
     ./modules/colemak-dh.nix
@@ -103,7 +105,7 @@ in {
       br = "branch";
     };
     includes = [
-      {path = gitUserConf;}
+      { path = gitUserConf; }
     ];
   };
 

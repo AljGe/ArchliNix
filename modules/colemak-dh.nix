@@ -4,9 +4,11 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.my.colemakDH;
-in {
+in
+{
   options.my.colemakDH.enable = mkEnableOption "Colemak-DH remaps for CLI tools";
 
   config = mkIf cfg.enable {

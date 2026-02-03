@@ -3,30 +3,32 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib) mkEnableOption;
 
   cfg = config.my.librewolf;
   isWsl = config.my.platform.isWsl or false;
   guiEnabled = config.my.packages.enableGui;
 
-  mkEngine = {
-    template,
-    params ? [],
-    icon ? null,
-  }: let
-    url = {inherit template params;};
-  in
+  mkEngine =
+    {
+      template,
+      params ? [ ],
+      icon ? null,
+    }:
+    let
+      url = { inherit template params; };
+    in
     lib.filterAttrs (k: v: v != null) {
-      urls = [url];
+      urls = [ url ];
       inherit icon;
     };
-in {
-  options.my.librewolf.enable =
-    mkEnableOption "Librewolf profile and hardening"
-    // {
-      default = guiEnabled && !isWsl;
-    };
+in
+{
+  options.my.librewolf.enable = mkEnableOption "Librewolf profile and hardening" // {
+    default = guiEnabled && !isWsl;
+  };
 
   config = lib.mkIf (cfg.enable && !isWsl) {
     programs.librewolf = {

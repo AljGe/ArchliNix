@@ -3,12 +3,14 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib) mkBefore mkMerge;
   profileDir = config.home.profileDirectory;
   # Explicit boolean OR to avoid treating the default as a function
   isWsl = config.my.platform.isWsl or false;
-in {
+in
+{
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
@@ -44,8 +46,26 @@ in {
       nhs = "nh search";
       wormhole = "wormhole-rs";
       magic-wormhole = "wormhole-rs";
-      docling = "LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath [pkgs.mesa pkgs.libGL pkgs.stdenv.cc.cc.lib]}:\$LD_LIBRARY_PATH TORCH_DEVICE=cuda uvx docling";
-      marker = "TORCH_DEVICE=cuda uvx --with psutil --from marker-pdf marker";
+      docling = "LD_LIBRARY_PATH=${
+        pkgs.lib.makeLibraryPath [
+          pkgs.mesa
+          pkgs.libGL
+          pkgs.libglvnd
+          pkgs.glib
+          pkgs.xorg.libxcb
+          pkgs.xorg.libX11
+          pkgs.stdenv.cc.cc.lib
+        ]
+      }:\$LD_LIBRARY_PATH TORCH_DEVICE=cuda uvx docling";
+      marker = "LD_LIBRARY_PATH=${
+        pkgs.lib.makeLibraryPath [
+          pkgs.glib
+          pkgs.pango
+          pkgs.cairo
+          pkgs.gdk-pixbuf
+          pkgs.libGL
+        ]
+      }:$LD_LIBRARY_PATH TORCH_DEVICE=cuda uvx --with psutil --with weasyprint --from marker-pdf marker";
     };
 
     history = {

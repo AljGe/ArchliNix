@@ -1,15 +1,17 @@
-{config, ...}: let
+{ config, ... }:
+let
   homeDir = config.home.homeDirectory;
   xdgConfigHome = config.xdg.configHome;
   gitUserConf = "${xdgConfigHome}/git/user.conf";
   jjUserConf = "${xdgConfigHome}/jj/config.toml";
-in {
+in
+{
   sops = {
     age.keyFile = "${homeDir}/.config/sops/age/keys.txt";
     defaultSopsFile = ../secrets/secrets.yaml;
-    secrets."example_secret" = {};
-    secrets."github_private_mail" = {};
-    secrets."github_private_name" = {};
+    secrets."example_secret" = { };
+    secrets."github_private_mail" = { };
+    secrets."github_private_name" = { };
     templates."example.env" = {
       content = ''
         EXAMPLE_SECRET=${config.sops.placeholder."example_secret"}

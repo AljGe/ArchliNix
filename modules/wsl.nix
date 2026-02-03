@@ -2,12 +2,14 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.wsl;
   isWsl = config.my.platform.isWsl or false;
   shellLdAppend = "$" + "{LD_LIBRARY_PATH:+:" + "$" + "{LD_LIBRARY_PATH}}";
   xdgConfigHome = config.xdg.configHome;
-in {
+in
+{
   options.wsl = {
     enable = lib.mkEnableOption "WSL-specific settings";
     trimDesktopPackages = lib.mkOption {
