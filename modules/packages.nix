@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  pkgs-unstable,
   ...
 }:
 let
@@ -14,6 +15,9 @@ let
     attrValues
     mapAttrsToList
     ;
+
+  # Helper alias for unstable packages
+  unstable = pkgs-unstable;
 
   cfg = config.my.packages;
   trimDesktop = config.wsl.trimDesktopPackages or false;
