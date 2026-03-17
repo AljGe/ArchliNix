@@ -93,6 +93,12 @@ in
 
     initContent = mkMerge [
       (mkBefore ''
+        # Disable all forms of autocorrect before Oh My Zsh/plugins load
+        export ENABLE_CORRECTION="false"
+        export DISABLE_CORRECTION="true"
+        unsetopt correct
+        unsetopt correctall
+
         # Detect Cursor or VS Code Agent execution
         if [[ -n "$ANTIGRAVITY_AGENT" ]] || [[ -n "$CURSOR_TRACE_ID" ]] || [[ "$TERM_PROGRAM" == "vscode" && -z "$TERM_PROGRAM_VERSION" ]]; then
           # Set a very simple prompt that robots love
@@ -132,9 +138,6 @@ in
             eval "$(/usr/bin/wsl2-ssh-agent)" > /dev/null
           fi
         fi
-        # Disable 'did you mean' command correction
-        export ENABLE_CORRECTION="false"
-        unsetopt correct
 
         # :: HUMAN MODE ::
         if [[ -z "$ANTIGRAVITY_AGENT" && -z "$CURSOR_TRACE_ID" ]]; then
