@@ -31,6 +31,7 @@ in
     dotDir = "${config.xdg.configHome}/zsh";
     enableCompletion = true;
     autosuggestion.enable = true;
+    enableAutocorrections = false;
     syntaxHighlighting.enable = true;
     shellAliases = {
       ff = "fzf";
