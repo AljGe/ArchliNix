@@ -167,7 +167,7 @@ in
     enable = true;
     enableZshIntegration = false;
     settings.cmd_duration.disabled = true;
-    settings.scan_timeout = 10;
+    settings.scan_timeout = 100;
   };
 
   programs.fzf = {

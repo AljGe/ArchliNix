@@ -49,6 +49,7 @@ let
     ];
     content = [
       bat
+      ghostscript
       helix
       jq
       micro
