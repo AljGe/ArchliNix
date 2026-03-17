@@ -132,8 +132,9 @@ in
             eval "$(/usr/bin/wsl2-ssh-agent)" > /dev/null
           fi
         fi
-        # Enable 'did you mean' command correction
-        export ENABLE_CORRECTION="true"
+        # Disable 'did you mean' command correction
+        export ENABLE_CORRECTION="false"
+        unsetopt correct
 
         # :: HUMAN MODE ::
         if [[ -z "$ANTIGRAVITY_AGENT" && -z "$CURSOR_TRACE_ID" ]]; then
