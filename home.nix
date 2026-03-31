@@ -67,8 +67,21 @@ in
   xdg.configFile = {
     "uv/uv.toml".text = ''
       python-downloads = "manual"
+      exclude-newer = "7 days"
+    '';
+    "pnpm/rc".text = ''
+      minimum-release-age=10080
+    '';
+    "bunfig.toml".text = ''
+      [install]
+      minimumReleaseAge = 604800
     '';
   };
+
+  home.file.".npmrc".text = ''
+    min-release-age=7
+    auto-install-peers=true
+  '';
 
   programs.home-manager.enable = true;
 
