@@ -18,11 +18,6 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # NUR for firefox add-ons (rycee) and other community packages
-    nur = {
-      url = "github:nix-community/NUR";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     # Prebuilt nix-index database for fast command-not-found suggestions
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
@@ -37,7 +32,6 @@
       nixpkgs-unstable,
       home-manager,
       sops-nix,
-      nur,
       nix-index-database,
       ...
     }:
@@ -60,19 +54,6 @@
         modules = [
           sops-nix.homeManagerModule
           nix-index-database.homeModules.nix-index
-          # Enable NUR overlay so pkgs.nur.repos.rycee.firefox-addons is available
-          (
-            {
-              config,
-              pkgs,
-              ...
-            }:
-            {
-              nixpkgs.overlays = [
-                nur.overlays.default
-              ];
-            }
-          )
           ./home.nix
         ];
       };

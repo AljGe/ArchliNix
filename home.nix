@@ -28,7 +28,6 @@ in
   imports = [
     ./modules/platform.nix
     ./modules/colemak-dh.nix
-    ./modules/librewolf.nix
     ./modules/packages.nix
     ./modules/secrets.nix
     ./modules/shell.nix
