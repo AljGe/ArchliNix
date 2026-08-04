@@ -9,15 +9,8 @@ in
   sops = {
     age.keyFile = "${homeDir}/.config/sops/age/keys.txt";
     defaultSopsFile = ../secrets/secrets.yaml;
-    secrets."example_secret" = { };
     secrets."github_private_mail" = { };
     secrets."github_private_name" = { };
-    templates."example.env" = {
-      content = ''
-        EXAMPLE_SECRET=${config.sops.placeholder."example_secret"}
-      '';
-      path = "${homeDir}/.config/example/.env";
-    };
     templates."git-user.conf" = {
       content = ''
         [user]

@@ -1,16 +1,20 @@
-{ lib, ... }:
-let
-  wslInterop = builtins.pathExists "/proc/sys/fs/binfmt_misc/WSLInterop";
-  wslDistro = (builtins.getEnv "WSL_DISTRO_NAME") != "";
-  kernelVersion =
-    if builtins.pathExists "/proc/version" then builtins.readFile "/proc/version" else "";
-  kernelHasMicrosoft = (builtins.match ".*[Mm]icrosoft.*" kernelVersion) != null;
-  isWslDetected = wslInterop || wslDistro || kernelHasMicrosoft;
-in
+{
+  lib,
+  ...
+}:
 {
   options.my.platform.isWsl = lib.mkOption {
     type = lib.types.bool;
-    default = isWslDetected;
-    description = "Whether the system is running under WSL (auto-detected, overridable).";
+    default = true;
+    description = ''
+      Whether the system is running under WSL2.
+
+      This configuration targets WSL2. Auto-detection via /proc and
+      environment variables cannot work in pure flake evaluation
+      (nix build, nix flake check, and home-manager/nh switch all run
+      pure, which forbids filesystem and environment access), so it
+      defaults to true. Override to false when deploying to a non-WSL
+      host.
+    '';
   };
 }

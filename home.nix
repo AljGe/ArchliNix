@@ -37,7 +37,7 @@ in
 
   home.username = "archliNix";
   home.homeDirectory = "/home/archliNix";
-  home.stateVersion = "25.05";
+  home.stateVersion = "26.05";
   nixpkgs.config.allowUnfree = true;
 
   # WSL-aware defaults; toggle here to allow GUI/compute bits on WSL.
@@ -82,6 +82,7 @@ in
   home.file.".npmrc".text = ''
     min-release-age=7
     auto-install-peers=true
+    ignore-scripts=true
   '';
 
   programs.home-manager.enable = true;

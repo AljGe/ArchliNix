@@ -21,8 +21,10 @@ in
     };
   };
 
-  programs.gemini-cli = {
+  programs.antigravity-cli = {
     enable = true;
+    # nixos-26.05 stable still ships gemini-cli under its old name
+    package = pkgs.gemini-cli;
     defaultModel = "gemini-3-pro";
   };
 
@@ -120,7 +122,6 @@ in
 
       ''
         export LESS='-RFX --mouse'
-        export HISTORY_BASE="$HOME/.local/state/zsh/history"
         # Initialize SSH agent forwarding from Windows to WSL
         if [ -x /usr/bin/wsl2-ssh-agent ]; then
           # Always try to init

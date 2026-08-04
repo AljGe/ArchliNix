@@ -50,9 +50,9 @@ let
     content = [
       bat
       ghostscript
-      helix
       jq
       micro
+      nano
       sd
       yq-go
     ];

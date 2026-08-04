@@ -4,12 +4,12 @@
   # Define all external dependencies here.
   inputs = {
     # Stable channel - primary source for most packages
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     # Unstable channel - for bleeding edge packages
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     # The Home Manager tool (pinned to match nixpkgs release)
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       # This line ensures Home Manager uses the same version of nixpkgs
       # that is defined above, preventing version conflicts.
       inputs.nixpkgs.follows = "nixpkgs";
@@ -45,10 +45,7 @@
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         # Pass unstable pkgs to modules for selective bleeding-edge packages
         extraSpecialArgs = {
-          pkgs-unstable = import nixpkgs-unstable {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
-          };
+          pkgs-unstable = nixpkgs-unstable.legacyPackages.x86_64-linux;
         };
         # Specify the main module file for this configuration.
         modules = [

@@ -20,8 +20,6 @@ let
 
   cfg = config.my.opencode;
 
-  # Per-language toolchain: runtime/LSP/formatter packages plus the
-  # opencode LSP and formatter entries that point at the nix-installed binaries.
   languageConfig = {
     python = {
       packages = [
@@ -87,8 +85,6 @@ let
 
   formatterConfig = foldl' (acc: name: acc // enabledLanguages.${name}.formatter) { } enabledNames;
 
-  # DeepSeek API key lives in a sops-managed file; opencode's {file:...}
-  # substitution reads it at runtime, so no key material ever lands in config.
   deepseekKeyFile = "${config.home.homeDirectory}/.config/opencode/deepseek-key";
   modelId = last (splitString "/" cfg.model);
 
@@ -96,11 +92,47 @@ let
     {
       "$schema" = "https://opencode.ai/config.json";
       inherit (cfg) model;
+
+      # 1. Map all OpenCode agents to DeepSeek V4 Flash
+      agent = {
+        build = {
+          model = cfg.model;
+        };
+        plan = {
+          model = cfg.model;
+        };
+        general = {
+          model = cfg.model;
+          mode = "subagent";
+        };
+        explore = {
+          model = cfg.model;
+          mode = "subagent";
+        };
+        scout = {
+          model = cfg.model;
+          mode = "subagent";
+        };
+      };
+
       lsp = lspConfig;
       formatter = formatterConfig;
+
+      # 2. Fix DeepSeek V4 Flash API options and reasoning stream handling
       provider.deepseek = {
-        options.apiKey = "{file:${deepseekKeyFile}}";
-        models.${modelId}.options.temperature = cfg.temperature;
+        options = {
+          apiKey = "{file:${deepseekKeyFile}}";
+          baseURL = "https://api.deepseek.com/v1";
+          timeout = 90000; # Prevent timeouts when running 3+ subagents simultaneously
+        };
+        models.${modelId} = {
+          options = {
+            temperature = cfg.temperature;
+          };
+          interleaved = {
+            field = "reasoning_content";
+          };
+        };
       };
     }
     // cfg.extraConfig
@@ -113,7 +145,7 @@ in
     model = mkOption {
       type = types.str;
       default = "deepseek/deepseek-v4-flash";
-      description = "Default model used by OpenCode.";
+      description = "Default model used by all OpenCode primary and subagent workflows.";
     };
 
     temperature = mkOption {
