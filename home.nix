@@ -28,6 +28,7 @@ in
   imports = [
     ./modules/platform.nix
     ./modules/colemak-dh.nix
+    ./modules/opencode.nix
     ./modules/packages.nix
     ./modules/secrets.nix
     ./modules/shell.nix
@@ -58,6 +59,7 @@ in
   # Ensure Nix profile binaries are on PATH for all shells (direnv, subshells, etc.)
   home.sessionPath = [
     "${profileDir}/bin"
+    "${config.home.homeDirectory}/.local/bin"
     "/nix/var/nix/profiles/default/bin"
   ];
 
@@ -87,6 +89,8 @@ in
   fonts.fontconfig.enable = true;
 
   my.colemakDH.enable = true;
+
+  my.opencode.enable = true;
 
   programs.yazi = {
     enable = true;
