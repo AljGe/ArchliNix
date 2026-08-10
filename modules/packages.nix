@@ -60,6 +60,7 @@ let
       gh
       glab
       jujutsu
+      wrangler
     ];
     network = [
       dnsutils
