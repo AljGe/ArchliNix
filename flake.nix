@@ -23,6 +23,11 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Skills collection for the pi coding agent (pinned, not a Nix flake)
+    pi-skills = {
+      url = "github:badlogic/pi-skills";
+      flake = false;
+    };
   };
   # Define what this flake builds.
   outputs =
@@ -33,19 +38,21 @@
       home-manager,
       sops-nix,
       nix-index-database,
+      pi-skills,
       ...
     }:
-    {
-      # Define a Home Manager configuration for a specific user and host.
-      # Using a unique name like "username@hostname" allows for managing
-      # multiple configurations from the same flake.
-      homeConfigurations."archliNix" = home-manager.lib.homeManagerConfiguration {
+    let
+      # Single Home Manager evaluation shared by the homeConfigurations output
+      # and the pi-hpc-bundle package, so the bundle always mirrors the live
+      # config (model tiers, thinking levels, skills, aliases).
+      hmConfig = home-manager.lib.homeManagerConfiguration {
         # Pass the nixpkgs collection to Home Manager.
         # The architecture must match the host system.
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         # Pass unstable pkgs to modules for selective bleeding-edge packages
         extraSpecialArgs = {
           pkgs-unstable = nixpkgs-unstable.legacyPackages.x86_64-linux;
+          pi-skills = pi-skills;
         };
         # Specify the main module file for this configuration.
         modules = [
@@ -53,6 +60,21 @@
           nix-index-database.homeModules.nix-index
           ./home.nix
         ];
+      };
+    in
+    {
+      # Define a Home Manager configuration for a specific user and host.
+      # Using a unique name like "username@hostname" allows for managing
+      # multiple configurations from the same flake.
+      homeConfigurations."archliNix" = hmConfig;
+
+      # Self-contained pi bundle for an HPC login node (no Nix, no root):
+      # agent config + skills + rc + installer. See modules/pi-hpc-bundle.nix
+      # and hpc/README.md; ship it with ./hpc/sync-to-hpc.sh.
+      packages.x86_64-linux.pi-hpc-bundle = import ./modules/pi-hpc-bundle.nix {
+        inherit (nixpkgs) lib;
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        hmConfig = hmConfig;
       };
     };
 

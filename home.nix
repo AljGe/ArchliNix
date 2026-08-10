@@ -26,10 +26,11 @@ let
 in
 {
   imports = [
-    ./modules/platform.nix
     ./modules/colemak-dh.nix
     ./modules/opencode.nix
     ./modules/packages.nix
+    ./modules/pi.nix
+    ./modules/platform.nix
     ./modules/secrets.nix
     ./modules/shell.nix
     ./modules/wsl.nix
@@ -92,6 +93,37 @@ in
   my.colemakDH.enable = true;
 
   my.opencode.enable = true;
+  my.opencode.vision.enable = true;
+  my.opencode.languages = {
+    python = true;
+    typescript = true;
+    nix = true;
+    kotlin = false;
+  };
+
+  my.pi.enable = true;
+  my.pi.vision.enable = true;
+  my.pi.go.enable = true;
+  my.pi.settings = {
+    quietStartup = true;
+    disableUpdateCheck = true;
+  };
+  my.pi.extras.piSkills.braveSearch.enable = true;
+  my.pi.extras.piSkills.browserTools.enable = true;
+  # Hide the Cloudflare skill collection (~/.claude/skills) from pi for now.
+  # web-perf stays (it is not Cloudflare-specific). Re-enable by emptying the list.
+  my.pi.skills.exclude = [
+    "agents-sdk"
+    "cloudflare"
+    "cloudflare-email-service"
+    "cloudflare-one"
+    "cloudflare-one-migrations"
+    "durable-objects"
+    "sandbox-sdk"
+    "turnstile-spin"
+    "workers-best-practices"
+    "wrangler"
+  ];
 
   programs.yazi = {
     enable = true;

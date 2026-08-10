@@ -1,0 +1,30 @@
+# Windows OpenSSH config for reaching the HPC login node through the barrier
+# node with password/OTP auth (no keys allowed) and connection multiplexing.
+#
+# Install:
+#   1. Edit the <placeholders> below.
+#   2. Save as  C:\Users\<you>\.ssh\config
+#   3. ssh hpc        # enter password + OTP once; connection is reused for 8h
+#
+# VSCode/Cursor Remote-SSH: pick "hpc" as the host - ProxyJump is honored.
+# With ControlMaster active, scp/rsync/git over ssh (used by
+# hpc/sync-to-hpc.sh) reuse the OTP-authenticated connection without
+# re-prompting.
+
+Host barrier
+  HostName <barrier.example.edu>
+  User <yourhpcuser>
+
+Host hpc
+  HostName <hpc-login.example.edu>
+  User <yourhpcuser>
+  ProxyJump barrier
+  ControlMaster auto
+  ControlPath ~/.ssh/cm-%r@%h:%p
+  ControlPersist 8h
+  ServerAliveInterval 30
+  ServerAliveCountMax 3
+
+# If the barrier refuses multiplexing (some OTP bastions kill the master
+# socket), comment out the Control* lines - every ssh/scp/rsync then prompts
+# for OTP, which still works, just slower.
