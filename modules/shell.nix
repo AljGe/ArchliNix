@@ -55,8 +55,8 @@ in
           pkgs.libGL
           pkgs.libglvnd
           pkgs.glib
-          pkgs.xorg.libxcb
-          pkgs.xorg.libX11
+          pkgs.libxcb
+          pkgs.libx11
           pkgs.stdenv.cc.cc.lib
         ]
       }:\$LD_LIBRARY_PATH TORCH_DEVICE=cuda uvx docling";
